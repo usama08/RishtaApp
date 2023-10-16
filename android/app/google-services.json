@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "732072693817",
+    "project_id": "easyrishtaapp",
+    "storage_bucket": "easyrishtaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732072693817:android:09f3353475f77b73a47de8",
+        "android_client_info": {
+          "package_name": "com.example.easyrishta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHRriN9TZSETzIJU_-twr6KQtmk1rnr_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
