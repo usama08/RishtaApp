@@ -196,8 +196,9 @@ class PofileController extends GetxController {
       print("userid");
       if (userDoc.exists) {
         await usersCollection.doc(userId).update({
-          "imagepath": imagepth,
+          "imagepath": imagepth.toString(),
         });
+
         print('User data updated successfully');
       } else {
         // User with the given userId does not exist

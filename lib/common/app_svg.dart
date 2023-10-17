@@ -6,4 +6,5 @@ class AppSvgImages {
   static const search = "assets/svgimage/search.svg";
   static const whatapp = "assets/svgimage/whatapp.svg";
   static const nextbtn = "assets/svgimage/nextsvg.svg";
+  static const sendbtn = "assets/svgimage/sending.svg";
 }

@@ -77,33 +77,33 @@ class UserInfoData {
     required this.userId,
   });
 
-  factory UserInfoData.fromJson(Map<String, dynamic> json) {
+  factory UserInfoData.fromMap(Map<String, dynamic> json) {
     return UserInfoData(
       aboutYourSelf: json['AboutYourSelf'] ?? "",
-      bodyType: json['Bodytype'] ?? "",
+      bodyType: json['BodyType'] ?? "",
       caste: json['Caste'] ?? "",
       city: json['City'] ?? "",
       country: json['Country'] ?? "",
-      countryCode: json['Countrycode'] ?? "",
-      dateOfBirth: json['DateofBirth'] ?? "",
+      countryCode: json['CountryCode'] ?? "",
+      dateOfBirth: json['DateOfBirth'] ?? "",
       designation: json['Designation'] ?? "",
       drinking: json['Drinking'] ?? "",
       email: json['Email'] ?? "",
       firstname: json['Firstname'] ?? "",
       gender: json['Gender'] ?? "",
       gothra: json['Gothra'] ?? "",
-      habits: json['Habbits'] ?? "",
+      habits: json['Habits'] ?? "",
       height: json['Height'] ?? "",
       hobby: json['Hobby'] ?? "",
       horoscope: json['Horoscope'] ?? "",
       income: json['Income'] ?? "",
       lastname: json['Lastname'] ?? "",
       manglik: json['Manglik'] ?? "",
-      maritalStatus: json['MaritialStatus'] ?? "",
+      maritalStatus: json['MaritalStatus'] ?? "",
       moonSign: json['MoonSign'] ?? "",
       motherTongue: json['MotherTongue'] ?? "",
       occupation: json['Occupation'] ?? "",
-      phoneNo: json['Phoneno'] ?? "",
+      phoneNo: json['PhoneNo'] ?? "",
       qualification: json['Qualification'] ?? "",
       religion: json['Religion'] ?? "",
       skinTone: json['SkinTone'] ?? "",
@@ -115,7 +115,7 @@ class UserInfoData {
       totalChildren: json['TotalChildren'] ?? "",
       weight: json['Weight'] ?? "",
       imagePath: json['imagepath'] ?? "",
-      userId: json['userId'] ?? "",
+      userId: json['UserId'] ?? "",
     );
   }
 }

@@ -53,6 +53,7 @@ dependencies:
   cloud_firestore: ^4.9.3
   range_slider_flutter: ^0.0.2
   permission_handler: ^11.0.1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

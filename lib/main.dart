@@ -1,6 +1,8 @@
+import 'package:easyrishta/View/ChatScreen/chatroom.dart';
 import 'package:easyrishta/View/Dashboard/dashboard_screen.dart';
 import 'package:easyrishta/View/Dashboard/filter_screen.dart';
 import 'package:easyrishta/View/Dashboard/make_match.dart';
+import 'package:easyrishta/View/Dashboard/other_profiles.dart';
 import 'package:easyrishta/View/Dashboard/profile_info.dart';
 import 'package:easyrishta/View/Profile/buildprofile_sceeen.dart';
 import 'package:easyrishta/View/Profile/fifthprofile_screen.dart';
@@ -9,6 +11,7 @@ import 'package:easyrishta/View/Profile/lastfinalbuildprofile.dart';
 import 'package:easyrishta/View/Profile/sixthbuildprofile.dart';
 import 'package:easyrishta/View/Profile/thirdbuildprofile.dart';
 import 'package:easyrishta/View/Userinfo/userid.dart';
+import 'package:easyrishta/View/auth/authsceens/forget_paassword.dart';
 import 'package:easyrishta/View/auth/authsceens/login_Screen.dart';
 import 'package:easyrishta/View/auth/authsceens/signup_screen.dart';
 import 'package:easyrishta/View/auth/authsceens/splash_screen.dart';
@@ -59,6 +62,10 @@ class MyApp extends StatelessWidget {
                 'addimageprofile': (context) => const Addprofileimage(),
                 'userinfoid': (context) => UserId(),
                 'Dashboard': (context) => const DasboardScreen(),
+                'allprofile': (context) => const OtherProfile(),
+                'matching': (context) => const MatchesProfile(),
+                'chatroom': (context) => ChatScreen(),
+                'forgetpassword': (context) => const ForgetPassword(),
               });
         });
   }

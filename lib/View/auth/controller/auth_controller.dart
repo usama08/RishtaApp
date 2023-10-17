@@ -15,18 +15,19 @@ class SignupController extends GetxController {
   // RxBool isMalePressed = false.obs;
   // RxBool isFemalePressed = false.obs;
   final FirebaseAuth auth = FirebaseAuth.instance;
+
   TextEditingController firstname = TextEditingController();
   TextEditingController lastname = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController phoneno = TextEditingController();
   TextEditingController countryController = TextEditingController();
-
+  TextEditingController forgetemail = TextEditingController();
   var obscureText = true.obs;
   var genderis;
   @override
   void onInit() async {
-    countryController.text = "+91";
+    countryController.text = "+92";
     super.onInit();
   }
 
@@ -98,8 +99,8 @@ class SignupController extends GetxController {
 
         await Future.delayed(const Duration(seconds: 3));
         // // Navigate to the home page
-
-        Get.to(() => const LoginScreen());
+        Navigator.pushNamed(context, 'phone');
+        // Get.to(() => const LoginScreen());
         // Navigator.pushReplacement(
         //   context,
         //   MaterialPageRoute(builder: (context) =>  ),
@@ -163,6 +164,37 @@ class SignupController extends GetxController {
         CustomSnackBar.error(message: e.code.toString()),
       );
       print('');
+
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+  //// ----------------- reset password email -----------------/////
+
+  Future<dynamic> sendPasswordResetEmail(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: forgetemail.text.trim().toString());
+
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password reset email sent!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Navigate to the login screen
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, 'login');
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to send password reset email: ${e.code}'),
+          backgroundColor: Colors.red,
+        ),
+      );
 
       return false;
     } catch (e) {

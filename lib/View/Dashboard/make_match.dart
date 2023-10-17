@@ -1,9 +1,11 @@
+import 'package:easyrishta/View/Dashboard/filter_screen.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:easyrishta/common/app_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class MatchesProfile extends StatefulWidget {
   const MatchesProfile({super.key});
@@ -35,6 +37,18 @@ class _MatchesProfileState extends State<MatchesProfile> {
             Navigator.of(context).pop();
           },
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.filter_alt_outlined, // Use the close icon
+              color: Colors.red, // Set the color to red
+              size: 35,
+            ),
+            onPressed: () {
+              Get.to(const FilterScreen());
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [

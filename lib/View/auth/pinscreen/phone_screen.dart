@@ -55,7 +55,7 @@ class _MyPhoneState extends State<MyPhone> {
                           height: 25,
                         ),
                         Text(
-                          "Sigup with OPT",
+                          "Sigup with OTP",
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium!

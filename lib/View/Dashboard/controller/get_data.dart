@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/models/info_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-Future<UserInfoData?> getAboutYourselfData(String userId) async {
-  try {
-    DocumentSnapshot documentSnapshot =
-        await FirebaseFirestore.instance.collection('user').doc(userId).get();
+class UserProviderData {
+  String userId = FirebaseAuth.instance.currentUser!.uid;
 
-    if (documentSnapshot.exists) {
-      return UserInfoData.fromJson(
-          documentSnapshot.data() as Map<String, dynamic>);
-    } else {
-      return null; // Document doesn't exist
-    }
-  } catch (e) {
-    print('Error fetching AboutYourself data: $e');
-    return null;
+  Stream<List<UserInfoData>> get otherUsers {
+    return FirebaseFirestore.instance
+        .collection('user')
+        .where('userId', isNotEqualTo: userId) // Exclude the current user
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserInfoData.fromMap(doc.data()))
+              .toList(),
+        );
   }
 }

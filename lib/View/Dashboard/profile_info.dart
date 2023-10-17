@@ -1,20 +1,16 @@
 import 'package:easyrishta/View/Dashboard/widgets/container.dart';
 import 'package:easyrishta/common/app_colors.dart';
-import 'package:easyrishta/common/app_svg.dart';
+import 'package:easyrishta/models/info_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../common/app_image.dart';
 
-class ProfileInfo extends StatefulWidget {
-  const ProfileInfo({super.key});
+class ProfileInfo extends StatelessWidget {
+  final UserInfoData userData;
 
-  @override
-  State<ProfileInfo> createState() => _ProfileInfoState();
-}
+  const ProfileInfo({required this.userData});
 
-class _ProfileInfoState extends State<ProfileInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,17 +61,29 @@ class _ProfileInfoState extends State<ProfileInfo> {
                   child: Row(
                     children: [
                       // Left side image
-                      Container(
-                        width: 80.w,
-                        height: 80.h,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage(AppImages.infodemo),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      userData.imagePath.isEmpty
+                          ? Container(
+                              width: 80.w,
+                              height: 80.h,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: AssetImage(AppImages.infodemo),
+                                  fit: BoxFit.cover,
+                                ),
+                              ))
+                          : Container(
+                              width: 80.w,
+                              height: 80.h,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(userData.imagePath),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+
                       SizedBox(width: 10.w),
                       // Right side text
                       Expanded(
@@ -84,7 +92,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Pearl Chatra ',
+                              userData.firstname,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -95,7 +103,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                             ),
                             SizedBox(height: 3.h),
                             Text(
-                              'Fashion Designer.',
+                              userData.designation,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -116,29 +124,37 @@ class _ProfileInfoState extends State<ProfileInfo> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        infoDetail(context, "Name :", "Pearl Chatra"),
+                        infoDetail(
+                          context,
+                          "Name :",
+                          userData.firstname,
+                        ),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Marital Status :", "Single"),
+                        infoDetail(context, "Marital Status :",
+                            userData.maritalStatus),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Mother Tongue :", "Urdu"),
+                        infoDetail(
+                            context, "Mother Tongue :", userData.motherTongue),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Total Children :", "15"),
+                        infoDetail(context, "Total Children :",
+                            userData.totalChildren),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Children Status :", "Marrried"),
+                        infoDetail(context, "Children Status :",
+                            userData.statusChildren),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Height :", "N/A"),
+                        infoDetail(context, "Height :", userData.height),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Weight :", "N/A"),
+                        infoDetail(context, "Weight :", userData.weight),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Birthday :", "25/05/2000"),
+                        infoDetail(context, "Birthday :", userData.dateOfBirth),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Complexion :", "Urdu"),
+                        infoDetail(context, "Complexion :", ""),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Religion :", "Islam"),
+                        infoDetail(context, "Religion :", userData.religion),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Caste :", "N/A"),
+                        infoDetail(context, "Caste :", userData.caste),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Country :", "N/A"),
+                        infoDetail(context, "Country :", userData.country),
                       ],
                     ),
                   ),

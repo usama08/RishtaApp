@@ -63,7 +63,9 @@ class _DasboardScreenState extends State<DasboardScreen> {
             runSpacing: 16.0,
             children: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, 'matching');
+                },
                 child: SvgPicture.asset(
                   AppSvgImages.matches,
                   width: 100.0.w,
@@ -71,7 +73,9 @@ class _DasboardScreenState extends State<DasboardScreen> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, 'allprofile');
+                },
                 child: SvgPicture.asset(
                   AppSvgImages.otherprofile,
                   width: 100.0.w,
@@ -103,7 +107,9 @@ class _DasboardScreenState extends State<DasboardScreen> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, 'chatroom');
+                },
                 child: SvgPicture.asset(
                   AppSvgImages.onlinechat,
                   width: 100.0.w,

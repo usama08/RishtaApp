@@ -53,7 +53,7 @@ class _FilterScreenState extends State<FilterScreen> {
               size: 35,
             ),
             onPressed: () {
-              // Add your action when the close icon is pressed
+              Navigator.of(context).pop();
             },
           ),
         ],
