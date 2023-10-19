@@ -246,7 +246,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       );
                     } else {
-                      controller.registerEmailPassword(context);
+                      Navigator.pushNamed(context, 'phone');
+                      // controller.registerEmailPassword(context);
                     }
                   },
                   "SignUp with OPT",

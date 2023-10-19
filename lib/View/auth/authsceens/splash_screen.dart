@@ -1,3 +1,4 @@
+import 'package:easyrishta/View/auth/authsceens/login_Screen.dart';
 import 'package:easyrishta/View/auth/authsceens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class _SplashscreenState extends State<Splashscreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const SignUpScreen(),
+        builder: (context) => const LoginScreen(),
       ),
     );
   }

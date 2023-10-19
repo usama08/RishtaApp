@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easyrishta/models/info_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class PofileController extends GetxController {
   var imagepth;
+  var countryonly = "Pakistan";
+  var formattedFirstfullday = "";
   var countryValue = 'Pakistan';
   var stateValue = 'Punjab';
   var cityValue = 'Lahore';
@@ -31,12 +36,12 @@ class PofileController extends GetxController {
   var mothertongue = "Mother Tongue";
   var religions = "Religion";
   var castee = "Caste";
-  TextEditingController datebirth = TextEditingController();
-  TextEditingController religion = TextEditingController();
-  TextEditingController caste = TextEditingController();
-  TextEditingController tongue = TextEditingController();
-  TextEditingController subcaste = TextEditingController();
-  TextEditingController gothra = TextEditingController();
+  var qualifications = "Education*";
+  var caste = "Caste";
+
+  var religion = "Religion";
+  var tongue = "Mother Tongue";
+
   TextEditingController hobby = TextEditingController();
   TextEditingController aboutyourfelf = TextEditingController();
   TextEditingController img = TextEditingController();
@@ -52,10 +57,11 @@ class PofileController extends GetxController {
       print("userid");
       if (userDoc.exists) {
         await usersCollection.doc(userId).update({
-          "DateofBirth": datebirth.text.trim().toString(),
-          "Religion": religion.text.trim().toString(),
-          "Caste": caste.text.trim().toString(),
-          "MotherTongue": tongue.text.trim().toString(),
+          "DateofBirth": formattedFirstfullday.toString(),
+          "Religion": religion.trim().toString(),
+          "Caste": caste.trim().toString(),
+          "MotherTongue": tongue.trim().toString(),
+          "step": 1,
         });
         print('User data updated successfully');
       } else {
@@ -85,6 +91,7 @@ class PofileController extends GetxController {
           "MaritialStatus": maritialstatus.toString(),
           "TotalChildren": totalchild.toString(),
           "StatusChildren": statuschild.toString(),
+          "step": 2,
         });
         print('User data updated successfully');
       } else {
@@ -112,6 +119,7 @@ class PofileController extends GetxController {
           "Income": income.toString(),
           "Occupation": occupation.toString(),
           "Designation": designation.toString(),
+          "step": 3,
         });
         print('User data updated successfully');
       } else {
@@ -142,6 +150,7 @@ class PofileController extends GetxController {
           "Drinking": drinking.toString(),
           "Bodytype": bodytype.toString(),
           "SkinTone": skintone.toString(),
+          "step": 4,
         });
         print('User data updated successfully');
       } else {
@@ -165,14 +174,9 @@ class PofileController extends GetxController {
       print("userid");
       if (userDoc.exists) {
         await usersCollection.doc(userId).update({
-          "SubCaste": subcaste.text.trim(),
-          "Manglik": manglik.toString(),
-          "Star": star.toString(),
-          "Horoscope": horoscope.toString(),
-          "Gothra": gothra.text.trim(),
-          "MoonSign": moonsign.toString(),
           "Hobby": hobby.text.trim(),
           "AboutYourSelf": aboutyourfelf.text.trim(),
+          "step": 5,
         });
         print('User data updated successfully');
       } else {
@@ -195,11 +199,14 @@ class PofileController extends GetxController {
       final DocumentSnapshot userDoc = await usersCollection.doc(userId).get();
       print("userid");
       if (userDoc.exists) {
-        await usersCollection.doc(userId).update({
-          "imagepath": imagepth.toString(),
-        });
-
-        print('User data updated successfully');
+        if (imagepth == null) {
+          print("no image path");
+        } else {
+          await usersCollection.doc(userId).update({
+            "imagepath": imagepth,
+            "step": 6,
+          });
+        }
       } else {
         // User with the given userId does not exist
         print('User does not exist');
@@ -209,4 +216,6 @@ class PofileController extends GetxController {
       print('Error updating user data: $e');
     }
   }
+
+  //////////////////////----------Date Picker-----------------//////////////////
 }

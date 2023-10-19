@@ -1,3 +1,5 @@
+import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
+import 'package:easyrishta/View/auth/controller/auth_controller.dart';
 import 'package:easyrishta/View/auth/widgets/common_buttons.dart';
 import 'package:easyrishta/View/auth/pinscreen/phone_screen.dart';
 import 'package:easyrishta/common/app_colors.dart';
@@ -5,6 +7,7 @@ import 'package:easyrishta/common/app_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 
@@ -17,6 +20,7 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends State<OTPScreen> {
   final CountDownController _controller = CountDownController();
+  var controllerProfile = Get.put(SignupController());
   final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -148,7 +152,9 @@ class _OTPScreenState extends State<OTPScreen> {
                           height: 15.h,
                         ),
                         TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'phone');
+                            },
                             child: Text(
                               "Resend",
                               style: Theme.of(context)
@@ -172,7 +178,10 @@ class _OTPScreenState extends State<OTPScreen> {
                                       smsCode: code);
 
                               // Sign the user in (or link) with the credential
-                              await auth.signInWithCredential(credential);
+                              // await auth.signInWithCredential(credential);
+                              // ignore: use_build_context_synchronously
+                              await controllerProfile
+                                  .registerEmailPassword(context);
                               // ignore: use_build_context_synchronously
                               Navigator.pushNamedAndRemoveUntil(
                                   context, 'login', (route) => false);

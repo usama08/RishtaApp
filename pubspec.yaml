@@ -54,6 +54,7 @@ dependencies:
   range_slider_flutter: ^0.0.2
   permission_handler: ^11.0.1
   intl: ^0.18.1
+  country_picker: ^2.0.21
 
 dev_dependencies:
   flutter_test:

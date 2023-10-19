@@ -40,7 +40,9 @@ class _DasboardScreenState extends State<DasboardScreen> {
                   textAlign: TextAlign.center,
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'notification');
+                    },
                     icon: const Icon(
                       Icons.notifications_on,
                       color: AppColors.actionbut,

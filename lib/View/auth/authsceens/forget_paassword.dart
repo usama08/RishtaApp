@@ -1,5 +1,4 @@
 import 'package:easyrishta/View/auth/controller/auth_controller.dart';
-import 'package:easyrishta/View/auth/widgets/textpressbutton.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +96,16 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                   45.h,
                   AppColors.actionbut,
                   () {
-                    controllerprofile.sendPasswordResetEmail(context);
+                    if (controllerprofile.forgetemail.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Your Email is Empty*'),
+                        ),
+                      );
+                    } else {
+                      controllerprofile.sendPasswordResetEmail(context);
+                      controllerprofile.forgetemail.clear();
+                    }
                   },
                   "Reset Password",
                   AppColors.whiteColor,

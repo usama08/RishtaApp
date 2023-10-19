@@ -106,7 +106,7 @@ class _CustomtextFormfieldState extends State<CustomtextFormfield> {
                           child: Icon(
                             widget.prefixIconData,
                             size: 24,
-                            color: AppColors.whiteColor,
+                            color: AppColors.themeColor,
                           ),
                         ),
                       )
@@ -192,7 +192,7 @@ Widget textfield(BuildContext context, controller, hinttext) {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.only(right: 4.0, left: 4.0, bottom: 4.0),
         child: TextField(
           controller: controller,
           decoration: InputDecoration(

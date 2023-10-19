@@ -1,8 +1,11 @@
+import 'package:easyrishta/View/auth/controller/auth_controller.dart';
 import 'package:easyrishta/View/auth/widgets/textpressbutton.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../widgets/common_buttons.dart';
 import '../widgets/textfield.dart';
 
@@ -15,8 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController loginemail = TextEditingController();
-  TextEditingController password = TextEditingController();
+  var profilecontroller = Get.put(SignupController());
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -75,15 +77,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        customtextfield(context, TextInputType.text, loginemail,
-                            'Email *', false, null, null),
+                        customtextfield(
+                            context,
+                            TextInputType.text,
+                            profilecontroller.loginemail,
+                            'Email *',
+                            false,
+                            null,
+                            null),
                         SizedBox(
                           height: 15.h,
                         ),
                         customtextfield(
                           context,
                           TextInputType.text,
-                          password,
+                          profilecontroller.passworrd,
                           'Password *',
                           true,
                           null,
@@ -120,7 +128,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   45.h,
                   AppColors.actionbut,
                   () {
-                    Navigator.pushNamed(context, 'buildprofile');
+                    if (profilecontroller.loginemail.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Your Email is Empty*'),
+                        ),
+                      );
+                    } else if (profilecontroller.passworrd.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Your Password is Empty*'),
+                        ),
+                      );
+                    } else {
+                      profilecontroller.signInEmailPassword(context);
+                    }
                   },
                   "Login",
                   AppColors.whiteColor,

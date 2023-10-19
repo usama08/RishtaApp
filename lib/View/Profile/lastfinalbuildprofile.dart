@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easyrishta/View/Profile/verifyData.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,129 +26,167 @@ class _AddprofileimageState extends State<Addprofileimage> {
   var profileController = Get.put(PofileController());
   bool clearPic = false;
   File? image;
+  bool isLoading = false;
+  void refresh() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 4));
+
+    setState(() {
+      const CircularProgressIndicator(
+        color: AppColors.themeColor,
+        backgroundColor: AppColors.SecondaryColor,
+      );
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
-        // Background image
-        Image.asset(
-          AppImages.background, // Replace with your background image
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: AppColors.themeColor,
+          backgroundColor: AppColors.SecondaryColor,
         ),
+      );
+    } else {
+      return Scaffold(
+        body: Stack(children: [
+          // Background image
+          Image.asset(
+            AppImages.background, // Replace with your background image
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
 
-        // Sign-up form
-        Column(
-          children: [
-            SizedBox(height: 40.h),
-            // Spacer for top margin
-            Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'Add Photo',
-                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                        color: AppColors.BlackColor,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+          // Sign-up form
+          Column(
+            children: [
+              SizedBox(height: 40.h),
+              // Spacer for top margin
+              Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Add Photo',
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith(
+                              color: AppColors.BlackColor,
+                              fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: InkWell(
-                onTap: () {
-                  imagePickermethod(1); // Launch image picker
-                },
-                child: image == null || clearPic == false
-                    ? Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape
-                              .circle, // This makes the container circular
-                          color: AppColors
-                              .whiteColor, // Replace with your desired background color
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            AppImages.editprofile,
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: InkWell(
+                  onTap: () {
+                    imagePickermethod(1); // Launch image picker
+                  },
+                  child: image == null || clearPic == false
+                      ? Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape
+                                .circle, // This makes the container circular
+                            color: AppColors
+                                .whiteColor, // Replace with your desired background color
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              AppImages.editprofile,
+                              width: 300
+                                  .w, // Adjust the width and height as needed
+                              height: 300.h,
+                            ),
+                          ),
+                        )
+                      : ClipOval(
+                          child: Container(
                             width:
                                 300.w, // Adjust the width and height as needed
                             height: 300.h,
+                            color: AppColors
+                                .whiteColor, // Replace with your desired background color
+                            child: Image.file(
+                              image!,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      )
-                    : ClipOval(
-                        child: Container(
-                          width: 300.w, // Adjust the width and height as needed
-                          height: 300.h,
-                          color: AppColors
-                              .whiteColor, // Replace with your desired background color
-                          child: Image.file(
-                            image!,
-                            fit: BoxFit.cover,
-                          ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 30, left: 30),
+                child: submittButton(
+                  context,
+                  200.w,
+                  50.h,
+                  AppColors.actionbut,
+                  () {
+                    imagePickermethod(1);
+                  },
+                  "Chose Image",
+                  AppColors.whiteColor,
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15),
+                child: submittButton(
+                  context,
+                  double.infinity,
+                  45.h,
+                  AppColors.actionbut,
+                  () {
+                    if (image == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Your image is Empty*'),
                         ),
-                      ),
+                      );
+                    } else {
+                      refresh();
+                      uploadImage();
+                    }
+                  },
+                  "Continue",
+                  AppColors.whiteColor,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 30, left: 30),
-              child: submittButton(
-                context,
-                200.w,
-                50.h,
-                AppColors.actionbut,
-                () {
-                  imagePickermethod(1);
-                },
-                "Chose Image",
-                AppColors.whiteColor,
+              SizedBox(
+                height: 10.h,
               ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15),
-              child: submittButton(
-                context,
-                double.infinity,
-                45.h,
-                AppColors.actionbut,
-                () async {
-                  String userId = FirebaseAuth.instance.currentUser!.uid;
-                  uploadImage();
-                  await profileController.updateUserDatastep6(userId);
-                },
-                "Continue",
-                AppColors.whiteColor,
+              Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15),
+                child: submittButton(
+                  context,
+                  double.infinity,
+                  45.h,
+                  AppColors.whiteColor,
+                  () {
+                    Navigator.of(context).pop();
+                  },
+                  "Previous",
+                  AppColors.BlackColor,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15),
-              child: submittButton(
-                context,
-                double.infinity,
-                45.h,
-                AppColors.whiteColor,
-                () {},
-                "Previous",
-                AppColors.BlackColor,
-              ),
-            ),
-          ],
-        )
-      ]),
-    );
+            ],
+          )
+        ]),
+      );
+    }
   }
 
   final imagepicker = ImagePicker();
@@ -202,9 +241,11 @@ class _AddprofileimageState extends State<Addprofileimage> {
   }
 
   uploadImage() async {
+    print("print1");
     final firebaseStorage = FirebaseStorage.instance;
 
     if (image != null) {
+      print("print2");
       // Define a unique image path/name
       final imageName = image!.path;
       // Replace with your desired path/name
@@ -212,15 +253,27 @@ class _AddprofileimageState extends State<Addprofileimage> {
       // Upload the image to Firebase Storage
       var reference = firebaseStorage.ref().child(imageName);
       var uploadTask = reference.putFile(image!);
-
+      await Future.delayed(Duration(seconds: 3));
       try {
-        await uploadTask.whenComplete(() {
-          Navigator.pushNamed(context, 'Dashboard');
-        });
+        print("print3");
         profileController.imagepth = await reference.getDownloadURL();
 
         // Handle the download URL (you can save it or use it as needed)
         print('Download URL: ${profileController.imagepth}');
+
+        await uploadTask.whenComplete(() async {
+          print("print4");
+          print("when complete");
+          String userId = FirebaseAuth.instance.currentUser!.uid;
+          await profileController.updateUserDatastep6(userId);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailsVerificationScreen(),
+            ),
+          );
+          // Navigator.pushNamed(context, 'Dashboard');
+        });
       } catch (e) {
         print('Error uploading image: $e');
       }

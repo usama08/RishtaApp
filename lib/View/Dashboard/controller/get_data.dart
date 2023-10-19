@@ -17,3 +17,19 @@ class UserProviderData {
         );
   }
 }
+
+class CurrentUSerData {
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  Stream<List<UserInfoData>> get verifydata {
+    return FirebaseFirestore.instance
+        .collection('user')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserInfoData.fromMap(doc.data()))
+              .toList(),
+        );
+  }
+}

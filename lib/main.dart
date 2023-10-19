@@ -1,9 +1,8 @@
 import 'package:easyrishta/View/ChatScreen/chatroom.dart';
 import 'package:easyrishta/View/Dashboard/dashboard_screen.dart';
-import 'package:easyrishta/View/Dashboard/filter_screen.dart';
 import 'package:easyrishta/View/Dashboard/make_match.dart';
+import 'package:easyrishta/View/Dashboard/notification_screen.dart';
 import 'package:easyrishta/View/Dashboard/other_profiles.dart';
-import 'package:easyrishta/View/Dashboard/profile_info.dart';
 import 'package:easyrishta/View/Profile/buildprofile_sceeen.dart';
 import 'package:easyrishta/View/Profile/fifthprofile_screen.dart';
 import 'package:easyrishta/View/Profile/fourthbuildprofile.dart';
@@ -66,6 +65,7 @@ class MyApp extends StatelessWidget {
                 'matching': (context) => const MatchesProfile(),
                 'chatroom': (context) => ChatScreen(),
                 'forgetpassword': (context) => const ForgetPassword(),
+                'notification': (context) => const NotificationScreen(),
               });
         });
   }

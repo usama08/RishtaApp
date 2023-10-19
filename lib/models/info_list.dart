@@ -1,4 +1,5 @@
 class UserInfoData {
+  final int step;
   final String aboutYourSelf;
   final String bodyType;
   final String caste;
@@ -38,6 +39,7 @@ class UserInfoData {
   final String userId;
 
   UserInfoData({
+    required this.step,
     required this.aboutYourSelf,
     required this.bodyType,
     required this.caste,
@@ -79,13 +81,14 @@ class UserInfoData {
 
   factory UserInfoData.fromMap(Map<String, dynamic> json) {
     return UserInfoData(
+      step: json["step"] ?? 0,
       aboutYourSelf: json['AboutYourSelf'] ?? "",
       bodyType: json['BodyType'] ?? "",
       caste: json['Caste'] ?? "",
       city: json['City'] ?? "",
       country: json['Country'] ?? "",
       countryCode: json['CountryCode'] ?? "",
-      dateOfBirth: json['DateOfBirth'] ?? "",
+      dateOfBirth: json['DateofBirth'] ?? "",
       designation: json['Designation'] ?? "",
       drinking: json['Drinking'] ?? "",
       email: json['Email'] ?? "",
@@ -99,7 +102,7 @@ class UserInfoData {
       income: json['Income'] ?? "",
       lastname: json['Lastname'] ?? "",
       manglik: json['Manglik'] ?? "",
-      maritalStatus: json['MaritalStatus'] ?? "",
+      maritalStatus: json['MaritialStatus'] ?? "",
       moonSign: json['MoonSign'] ?? "",
       motherTongue: json['MotherTongue'] ?? "",
       occupation: json['Occupation'] ?? "",
@@ -116,6 +119,22 @@ class UserInfoData {
       weight: json['Weight'] ?? "",
       imagePath: json['imagepath'] ?? "",
       userId: json['UserId'] ?? "",
+    );
+  }
+}
+
+////////////////------------------//////////////
+class CurrentUser {
+  // Define the fields in your UserInfoData class
+  final String userId;
+  final String country;
+
+  CurrentUser({required this.userId, required this.country});
+
+  factory CurrentUser.fromMap(Map<String, dynamic> data) {
+    return CurrentUser(
+      userId: data['userId'] ?? '',
+      country: data['Country'] ?? '',
     );
   }
 }

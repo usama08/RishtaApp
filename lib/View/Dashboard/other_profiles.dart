@@ -49,10 +49,10 @@ class _OtherProfileState extends State<OtherProfile> {
               return GridView.builder(
                   scrollDirection: Axis.vertical,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 5.0, // Adjust the horizontal spacing
-                    mainAxisSpacing: 10.0, // Adjust the vertical spacing
-                  ),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 5.0, // Adjust the horizontal spacing
+                      mainAxisSpacing: 1.0, // Adjust the vertical spacing
+                      childAspectRatio: 0.7),
                   itemCount: userDataList!.length,
                   itemBuilder: (context, index) {
                     final userData = userDataList[index];
@@ -68,63 +68,66 @@ class _OtherProfileState extends State<OtherProfile> {
                             ),
                           );
                         },
-                        child: SingleChildScrollView(
+                        child: Container(
+                          width: 200,
+                          height: 200,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  userData.imagePath.isEmpty
-                                      ? Container(
-                                          width: 170.w,
-                                          height: 180.h,
-                                          child: Image.asset(
-                                            AppImages.profile,
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.center,
-                                            filterQuality: FilterQuality.low,
-                                          ),
-                                        )
-                                      : Container(
-                                          width: 170.w,
-                                          height: 180.h,
-                                          child: Image.network(
-                                            userData.imagePath,
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.center,
-                                            cacheHeight: 150,
-                                            cacheWidth: 150,
-                                            filterQuality: FilterQuality.low,
-                                          ),
-                                        ),
-                                  SizedBox(height: 5.h),
-                                  Text(
-                                    userData.firstname.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium!
-                                        .copyWith(
-                                            color: AppColors.BlackColor,
-                                            fontSize: 20.sp,
-                                            fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    userData.designation.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium!
-                                        .copyWith(
-                                            color: AppColors.BlackColor,
-                                            fontSize: 17.sp,
-                                            fontWeight: FontWeight.normal),
-                                  ),
-                                  const SizedBox(height: 5.0),
-                                ],
+                              userData.imagePath.isEmpty
+                                  ? Container(
+                                      width: 170.w,
+                                      height: 180.h,
+                                      child: Image.asset(
+                                        AppImages.profile,
+                                        fit: BoxFit.cover,
+                                        alignment: Alignment.center,
+                                        filterQuality: FilterQuality.low,
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 170.w,
+                                      height: 180.h,
+                                      child: Image.network(
+                                        userData.imagePath,
+                                        fit: BoxFit.cover,
+                                        alignment: Alignment.center,
+                                        cacheHeight: 150,
+                                        cacheWidth: 150,
+                                        filterQuality: FilterQuality.low,
+                                      ),
+                                    ),
+                              SizedBox(height: 5.h),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 5.0, right: 5.0),
+                                child: Text(
+                                  userData.firstname.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium!
+                                      .copyWith(
+                                          color: AppColors.BlackColor,
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              SizedBox(
-                                height: 20.h,
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 5.0, right: 5.0),
+                                child: Text(
+                                  userData.designation.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium!
+                                      .copyWith(
+                                          color: AppColors.BlackColor,
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.normal),
+                                ),
                               ),
+                              const SizedBox(height: 5.0),
                             ],
                           ),
                         ));
