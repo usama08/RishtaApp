@@ -30,12 +30,17 @@ class SignupController extends GetxController {
   TextEditingController forgetemail = TextEditingController();
   TextEditingController loginemail = TextEditingController();
   TextEditingController passworrd = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   var obscureText = true.obs;
   var genderis;
   @override
   void onInit() async {
     countryController.text = "+92";
     super.onInit();
+  }
+
+  getvalue() {
+    phoneController.text = phoneno.text;
   }
 
   ///========================= function for creating account======================///
@@ -83,6 +88,7 @@ class SignupController extends GetxController {
           "AboutYourSelf": profilecontroller.aboutyourfelf.text.trim(),
           "imagepath": profilecontroller.imagepth.toString(),
           "step": 0,
+          "userType": "user",
         });
         showDialog<void>(
           context: context,
@@ -283,7 +289,10 @@ class SignupController extends GetxController {
         // Return a default UserInfoData or handle this case as needed
         return CurrentUser(
             country: "",
-            userId: ""); // You may need to define a default constructor
+            userId: "",
+            occupation: '',
+            caste: '',
+            gender: ''); // You may need to define a default constructor
       }
     });
   }
@@ -296,11 +305,28 @@ class SignupController extends GetxController {
 
     // Get the current user's country
     String currentUserCountry = currentUser.country;
-
-    // Iterate through otherUsers and check for matching country
-    for (UserInfoData otherUser in otherUsers) {
-      if (otherUser.country == currentUserCountry) {
-        matchedUsers.add(otherUser);
+    String currentUserOccupation = currentUser.occupation;
+    String currentUserCaste = currentUser.caste;
+    String currentUserGener = currentUser.gender;
+    // Check if the current user has a country
+    // if(currentUserGener != otherUsers)
+    // for (UserInfoData otherUser in otherUsers) {
+    //   if (otherUser.gender == currentUserGener) {
+    //     otherUsers.remove(otherUser);
+    //   }
+    // }
+    if (currentUserCountry.isNotEmpty && otherUsers.isNotEmpty) {
+      for (UserInfoData otherUser in otherUsers) {
+        if (otherUser.country == currentUserCountry) {
+          matchedUsers.add(otherUser);
+        }
+      }
+    } else {
+      for (UserInfoData otherUser in otherUsers) {
+        if (otherUser.occupation == currentUserOccupation ||
+            otherUser.caste == currentUserCaste) {
+          matchedUsers.add(otherUser);
+        }
       }
     }
 

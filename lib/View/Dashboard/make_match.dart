@@ -1,15 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/View/Dashboard/filter_screen.dart';
+import 'package:easyrishta/View/Dashboard/matches_profilesdetails.dart';
 import 'package:easyrishta/View/auth/controller/auth_controller.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:easyrishta/common/app_svg.dart';
 import 'package:easyrishta/models/info_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
 
 class MatchesProfile extends StatefulWidget {
   const MatchesProfile({super.key});
@@ -20,25 +22,57 @@ class MatchesProfile extends StatefulWidget {
 
 class _MatchesProfileState extends State<MatchesProfile> {
   final SignupController signupController = Get.find();
-  late CurrentUser currentUser; // Initialize 'currentUser'
-  bool isLoading = true; // Add a loading flag
+  late CurrentUser currentUser;
+  bool isLoading = true;
+  List<UserInfoData> matchedUsers = [];
 
   @override
   void initState() {
     super.initState();
-    // Fetch the current user's data and set it to the 'currentUser' variable
     signupController.getCurrentUserData().listen((user) {
       setState(() {
         currentUser = user;
-        isLoading = false; // Set isLoading to false when data is fetched
+        isLoading = false;
       });
+    });
+  }
+
+  Future<void> checkInterested() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final interestedUserIds = <String>[];
+
+    final interestedUsersQuery = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userId)
+        .collection('interested')
+        .get();
+
+    for (var doc in interestedUsersQuery.docs) {
+      interestedUserIds.add(doc['userId']);
+    }
+
+    final snapshot = await signupController.getOtherUsersData().first;
+
+    if (snapshot == null || snapshot.isEmpty) {
+      return;
+    }
+
+    final updatedMatches = <UserInfoData>[];
+
+    for (final match in snapshot) {
+      if (!interestedUserIds.contains(match.userId)) {
+        updatedMatches.add(match);
+      }
+    }
+
+    setState(() {
+      matchedUsers = updatedMatches;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      // Show a loading indicator while data is being fetched
       return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -156,7 +190,6 @@ class _MatchesProfileState extends State<MatchesProfile> {
         stream: signupController.getOtherUsersData(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            // Show loading indicator while waiting for data
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -165,51 +198,116 @@ class _MatchesProfileState extends State<MatchesProfile> {
               child: Text("No matches found"),
             );
           }
-
           // Filter and match users based on the current user's country
           List<UserInfoData> matchedUsers = signupController.matchUsers(
             snapshot.data!,
             currentUser,
           );
+          if (matchedUsers.isEmpty) {
+            checkInterested();
+          }
 
           return ListView.builder(
             itemCount: matchedUsers.length,
             itemBuilder: (context, index) {
-              final UserInfoData match = matchedUsers[index];
-              return MatchCard(match: match);
+              UserInfoData match = matchedUsers[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MatchesProfiledetails(
+                        match: match,
+                      ),
+                    ),
+                  );
+                },
+                child: MatchCard(
+                  match: match,
+                  onInterested: () {
+                    removeInterested(match);
+                  },
+                ),
+              );
             },
           );
         },
       ),
     );
   }
+
+  void removeInterested(UserInfoData match) {
+    final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(userId)
+        .collection('interested')
+        .add({
+      'email': match.email,
+      'name': match.firstname,
+      'phone': match.phoneNo,
+      'userId': match.userId,
+    });
+
+    setState(() {
+      matchedUsers.removeWhere((user) => user.userId == match.userId);
+    });
+  }
 }
 
 class MatchCard extends StatefulWidget {
   final UserInfoData match;
+  final Function() onInterested;
 
-  const MatchCard({Key? key, required this.match}) : super(key: key);
+  const MatchCard({
+    Key? key,
+    required this.match,
+    required this.onInterested,
+  }) : super(key: key);
 
   @override
   State<MatchCard> createState() => _MatchCardState();
 }
 
 class _MatchCardState extends State<MatchCard> {
+  final SignupController signupController = Get.find();
   bool showMore = false;
+  bool isInterested = false;
+
+  void expressInterest() {
+    setState(() {
+      widget.onInterested();
+    });
+
+    setState(() {
+      isInterested = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          alignment: Alignment.center,
-          width: 350.w,
-          height: 450.h,
-          child: Image.network(
-            widget.match
-                .imagePath, // Replace with the image URL from UserInfoData
-            fit: BoxFit.cover,
-          ),
-        ),
+        widget.match.imagePath.isEmpty
+            ? Container(
+                alignment: Alignment.center,
+                width: 350.w,
+                height: 450.h,
+                child: Image.asset(
+                  AppImages.infodemo,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Container(
+                alignment: Alignment.center,
+                width: 350.w,
+                height: 450.h,
+                child: Image.network(
+                  widget.match.imagePath,
+                  fit: BoxFit.cover,
+                ),
+              ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +331,7 @@ class _MatchCardState extends State<MatchCard> {
                             .headlineMedium!
                             .copyWith(
                               color: AppColors.bottomNavigationbg,
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.normal,
                             ),
                         children: <TextSpan>[
@@ -258,11 +356,14 @@ class _MatchCardState extends State<MatchCard> {
                           showMore
                               ? TextSpan(
                                   text: widget.match.aboutYourSelf,
-                                  style: const TextStyle(
-                                    color: AppColors.bottomNavigationbg,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium!
+                                      .copyWith(
+                                        color: AppColors.bottomNavigationbg,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                 )
                               : const TextSpan(),
                         ],
@@ -274,14 +375,21 @@ class _MatchCardState extends State<MatchCard> {
             ),
             Column(
               children: [
-                InkWell(
-                  onTap: () {},
-                  child: SvgPicture.asset(
-                    AppSvgImages.nextbtn,
-                    width: 70.0.w,
-                    height: 50.0.h,
-                  ),
-                ),
+                isInterested
+                    ? const Text(
+                        "Interested",
+                        style: TextStyle(
+                          color: Colors.green,
+                        ),
+                      )
+                    : InkWell(
+                        onTap: expressInterest,
+                        child: SvgPicture.asset(
+                          AppSvgImages.nextbtn,
+                          width: 70.0.w,
+                          height: 50.0.h,
+                        ),
+                      ),
               ],
             ),
           ],

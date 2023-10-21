@@ -106,7 +106,7 @@ class UserInfoData {
       moonSign: json['MoonSign'] ?? "",
       motherTongue: json['MotherTongue'] ?? "",
       occupation: json['Occupation'] ?? "",
-      phoneNo: json['PhoneNo'] ?? "",
+      phoneNo: json['Phoneno'] ?? "",
       qualification: json['Qualification'] ?? "",
       religion: json['Religion'] ?? "",
       skinTone: json['SkinTone'] ?? "",
@@ -118,7 +118,7 @@ class UserInfoData {
       totalChildren: json['TotalChildren'] ?? "",
       weight: json['Weight'] ?? "",
       imagePath: json['imagepath'] ?? "",
-      userId: json['UserId'] ?? "",
+      userId: json['userId'] ?? "",
     );
   }
 }
@@ -128,13 +128,25 @@ class CurrentUser {
   // Define the fields in your UserInfoData class
   final String userId;
   final String country;
+  final String occupation;
+  final String caste;
+  final String gender;
 
-  CurrentUser({required this.userId, required this.country});
+  CurrentUser({
+    required this.userId,
+    required this.country,
+    required this.occupation,
+    required this.caste,
+    required this.gender,
+  });
 
   factory CurrentUser.fromMap(Map<String, dynamic> data) {
     return CurrentUser(
       userId: data['userId'] ?? '',
       country: data['Country'] ?? '',
+      occupation: data['Occupation'] ?? "",
+      caste: data['Caste'] ?? "",
+      gender: data['Gender'] ?? "",
     );
   }
 }

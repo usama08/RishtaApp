@@ -27,11 +27,15 @@ class _ProfileBuildState extends State<ProfileBuild> {
 
   // Your DatePicker function
   void selectDate() async {
+    final DateTime currentDate = DateTime.now();
+    final DateTime firstDayOfYear = DateTime(1950, 1, 1);
+    final DateTime lastDayOfYear = DateTime(currentDate.year, 12, 31);
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: firstDayOfYear,
+      lastDate: lastDayOfYear,
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: customDatePickerTheme(context), // Apply the custom theme

@@ -1,8 +1,10 @@
+import 'package:easyrishta/View/auth/controller/auth_controller.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../widgets/common_buttons.dart';
 
@@ -14,12 +16,14 @@ class MyPhone extends StatefulWidget {
 }
 
 class _MyPhoneState extends State<MyPhone> {
+  var controller = Get.find<SignupController>();
   TextEditingController numberController = TextEditingController();
 
   var phone;
   @override
   void initState() {
     super.initState();
+    controller.getvalue();
     numberController.text = "+92";
   }
 
@@ -97,8 +101,9 @@ class _MyPhoneState extends State<MyPhone> {
                               ),
                               Expanded(
                                 child: TextField(
+                                  controller: controller.phoneController,
                                   onChanged: (value) {
-                                    phone = value;
+                                    controller.phoneController.text = value;
                                   },
                                   keyboardType: TextInputType.phone,
                                   decoration: const InputDecoration(
@@ -128,7 +133,8 @@ class _MyPhoneState extends State<MyPhone> {
                           AppColors.actionbut,
                           () async {
                             await FirebaseAuth.instance.verifyPhoneNumber(
-                              phoneNumber: numberController.text + phone,
+                              phoneNumber: numberController.text +
+                                  controller.phoneController.text,
                               verificationCompleted:
                                   (PhoneAuthCredential credential) {},
                               verificationFailed: (FirebaseAuthException e) {},

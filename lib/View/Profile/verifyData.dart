@@ -194,8 +194,9 @@ class _DetailsVerificationScreenState extends State<DetailsVerificationScreen> {
                                     Navigator.pushNamed(context, 'Dashboard');
                                   },
                                   "Submit Information",
-                                  AppColors.whiteColor,
+                                  const Color.fromRGBO(255, 255, 255, 1),
                                 ),
+                                SizedBox(height: 10.h),
                               ],
                             ),
                           ),

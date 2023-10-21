@@ -80,7 +80,7 @@ class _OtherProfileState extends State<OtherProfile> {
                                       width: 170.w,
                                       height: 180.h,
                                       child: Image.asset(
-                                        AppImages.profile,
+                                        AppImages.infodemo,
                                         fit: BoxFit.cover,
                                         alignment: Alignment.center,
                                         filterQuality: FilterQuality.low,

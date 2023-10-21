@@ -1,16 +1,20 @@
 import 'package:easyrishta/View/Dashboard/widgets/container.dart';
 import 'package:easyrishta/common/app_colors.dart';
+import 'package:easyrishta/common/app_image.dart';
 import 'package:easyrishta/models/info_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../common/app_image.dart';
+class MatchesProfiledetails extends StatefulWidget {
+  final UserInfoData match;
 
-class ProfileInfo extends StatelessWidget {
-  final UserInfoData userData;
+  MatchesProfiledetails({required this.match});
 
-  const ProfileInfo({required this.userData});
+  @override
+  State<MatchesProfiledetails> createState() => _MatchesProfiledetailsState();
+}
 
+class _MatchesProfiledetailsState extends State<MatchesProfiledetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +65,7 @@ class ProfileInfo extends StatelessWidget {
                   child: Row(
                     children: [
                       // Left side image
-                      userData.imagePath.isEmpty
+                      widget.match.imagePath.isEmpty
                           ? Container(
                               width: 80.w,
                               height: 80.h,
@@ -78,7 +82,7 @@ class ProfileInfo extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                  image: NetworkImage(userData.imagePath),
+                                  image: NetworkImage(widget.match.imagePath),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -92,7 +96,7 @@ class ProfileInfo extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              userData.firstname,
+                              widget.match.firstname,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -103,7 +107,7 @@ class ProfileInfo extends StatelessWidget {
                             ),
                             SizedBox(height: 3.h),
                             Text(
-                              userData.designation,
+                              widget.match.designation,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -127,34 +131,36 @@ class ProfileInfo extends StatelessWidget {
                         infoDetail(
                           context,
                           "Name :",
-                          userData.firstname,
+                          widget.match.firstname,
                         ),
                         SizedBox(height: 5.h),
                         infoDetail(context, "Marital Status :",
-                            userData.maritalStatus),
+                            widget.match.maritalStatus),
                         SizedBox(height: 5.h),
-                        infoDetail(
-                            context, "Mother Tongue :", userData.motherTongue),
+                        infoDetail(context, "Mother Tongue :",
+                            widget.match.motherTongue),
                         SizedBox(height: 5.h),
                         infoDetail(context, "Total Children :",
-                            userData.totalChildren),
+                            widget.match.totalChildren),
                         SizedBox(height: 5.h),
                         infoDetail(context, "Children Status :",
-                            userData.statusChildren),
+                            widget.match.statusChildren),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Height :", userData.height),
+                        infoDetail(context, "Height :", widget.match.height),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Weight :", userData.weight),
+                        infoDetail(context, "Weight :", widget.match.weight),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Birthday :", userData.dateOfBirth),
+                        infoDetail(
+                            context, "Birthday :", widget.match.dateOfBirth),
                         SizedBox(height: 5.h),
                         infoDetail(context, "Complexion :", ""),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Religion :", userData.religion),
+                        infoDetail(
+                            context, "Religion :", widget.match.religion),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Caste :", userData.caste),
+                        infoDetail(context, "Caste :", widget.match.caste),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Country :", userData.country),
+                        infoDetail(context, "Country :", widget.match.country),
                         SizedBox(height: 10.h),
                       ],
                     ),
