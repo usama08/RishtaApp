@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
               debugShowCheckedModeBanner: false,
               theme: kAppThemeData[AppTheme.light],
-              initialRoute: 'chatroom',
+              initialRoute: 'splash',
               routes: {
                 'splash': (context) => const Splashscreen(),
                 'phone': (context) => const MyPhone(),
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
                 'allprofile': (context) => const OtherProfile(),
                 'matching': (context) => const MatchesProfile(),
                 'chatroom': (context) => ChatScreen(),
-                // 'chatroom': (context) => const VoiceChat(),
+              
                 'forgetpassword': (context) => const ForgetPassword(),
                 'notification': (context) => const NotificationScreen(),
               });
