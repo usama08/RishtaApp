@@ -55,13 +55,12 @@ dependencies:
   permission_handler: ^11.0.1
   intl: ^0.18.1
   country_picker: ^2.0.21
-  audioplayers: ^5.2.0
+
   file_picker: ^6.0.0
-  flutter_sound: ^9.2.13
-  record_mp3: ^3.0.0
+
+
   fluttertoast: ^8.2.2
-  path_provider: ^2.1.1
-  video_player: ^2.7.2
+
 
   
 
