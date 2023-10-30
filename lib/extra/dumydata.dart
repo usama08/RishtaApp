@@ -49,3 +49,47 @@ class _CountryStateCityPickerScreenState
     );
   }
 }
+
+class CountryOnly extends StatefulWidget {
+  const CountryOnly({super.key});
+
+  @override
+  _CountryOnlyState createState() => _CountryOnlyState();
+}
+
+class _CountryOnlyState extends State<CountryOnly> {
+  var profileController = Get.put(PofileController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Column(
+          children: [
+            SelectState(
+              style: const TextStyle(
+                color: AppColors.BlackColor, // Change text color here
+                fontSize: 16, // Adjust text size here
+              ),
+              onCountryChanged: (value) {
+                setState(() {
+                  profileController.countryonly = value;
+                });
+              },
+              onStateChanged: (value) {
+                setState(() {
+                  profileController.stateValue = value;
+                });
+              },
+              onCityChanged: (value) {
+                setState(() {
+                  profileController.cityValue = value;
+                });
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
@@ -10,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+
 import '../../models/chatroom.dart';
 import '../../models/message_model.dart';
 
@@ -20,13 +18,12 @@ class Message {
   Message(this.text) : timestamp = DateTime.now();
 }
 
-class ChatScreen extends StatefulWidget {
+class AdminChatScreen extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
-  _ChatScreenState createState() => _ChatScreenState();
+  _AdminChatScreenState createState() => _AdminChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _AdminChatScreenState extends State<AdminChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool isLoading = true;
   List<Message> messages = [];
@@ -53,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
   addmsg(String msgs) async {
     DateTime? timestamp;
     timestamp = DateTime.now();
+    // Reference to the parent document
     final parentDocumentRef =
         FirebaseFirestore.instance.collection('chatrooms').doc(userId);
 
@@ -66,11 +64,11 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection('chatrooms')
           .doc(userId)
           .collection('messages')
-          .add({
-        "sentby": userId,
-        "message": msgs,
-        "dateTime": timestamp,
-      });
+        ..add({
+          "sentby": userId,
+          "message": msgs,
+          "dateTime": timestamp.toString(),
+        });
     } else {
       FirebaseFirestore.instance
           .collection('chatrooms')
@@ -81,11 +79,11 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection('chatrooms')
           .doc(userId)
           .collection('messages')
-          .add({
-        "sentby": userId,
-        "message": msgs,
-        "dateTime": timestamp,
-      });
+        ..add({
+          "sentby": userId,
+          "message": msgs,
+          "dateTime": timestamp.toString(),
+        });
     }
   }
 
@@ -191,8 +189,9 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Stack(
         children: [
+          // Background image
           Image.asset(
-            AppImages.background,
+            AppImages.background, // Replace with your background image
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -204,62 +203,17 @@ class _ChatScreenState extends State<ChatScreen> {
               : Column(
                   children: [
                     Expanded(
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('chatrooms')
-                            .doc(userId)
-                            .collection('messages')
-                            .orderBy('dateTime') // Order messages by timestamp
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            final messages = snapshot.data!.docs;
-                            List<Widget> messageWidgets = [];
-
-                            for (var message in messages) {
-                              final messageData =
-                                  message.data() as Map<String, dynamic>;
-
-                              final sentBy = messageData['sentby'];
-                              final messageText = messageData['message'];
-                              final messageTime = messageData['dateTime'];
-
-                              final isCurrentUser = sentBy == userId;
-
-                              messageWidgets.add(
-                                ListTile(
-                                  title: Container(
-                                    alignment: isCurrentUser
-                                        ? Alignment.centerRight
-                                        : Alignment.centerLeft,
-                                    child: Text(messageText),
-                                  ),
-                                  subtitle: Text(
-                                    DateFormat('MMM d, hh:mm a').format(
-                                      (messageTime as Timestamp).toDate(),
-                                    ),
-                                  ),
-                                  trailing: isCurrentUser
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : null,
-                                ),
-                              );
-                            }
-
-                            return ListView(
-                              padding: const EdgeInsets.only(bottom: 100),
-                              children: messageWidgets,
-                            );
-                          }
+                      child: ListView.builder(
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final message = messages[index];
+                          return ListTile(
+                            title: Text(message.text),
+                            subtitle: Text(
+                              DateFormat('MMM d, hh:mm a')
+                                  .format(message.timestamp),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -291,7 +245,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               width: 40,
                               height: 40,
                               margin: const EdgeInsets.only(right: 10),
-                              child: SvgPicture.asset(AppSvgImages.sendbtn),
+                              child: SvgPicture.asset(AppSvgImages
+                                  .sendbtn), // Replace with your SVG asset
                             ),
                           ),
                         ],

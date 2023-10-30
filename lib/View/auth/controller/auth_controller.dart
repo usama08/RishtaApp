@@ -17,6 +17,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 class SignupController extends GetxController {
   var profilecontroller = Get.put(PofileController());
   RxBool isLoading = false.obs;
+  bool shouldApplyFilter = false;
   // RxBool isMalePressed = false.obs;
   // RxBool isFemalePressed = false.obs;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -297,36 +298,89 @@ class SignupController extends GetxController {
     });
   }
 
+  List<String> interestedUserIds = [];
+  getInterestedUsers(
+      List<UserInfoData> otherUsers, CurrentUser currentUser) async {
+    interestedUserIds.clear();
+    final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    final parentDocumentRef =
+        FirebaseFirestore.instance.collection('user').doc(userId);
+
+    final subcollectionRef = parentDocumentRef.collection('interested');
+
+    final subcollectionSnapshot = await subcollectionRef.get();
+
+    if (subcollectionSnapshot.docs.isNotEmpty) {
+      for (QueryDocumentSnapshot doc in subcollectionSnapshot.docs) {
+        String interestedUserId = doc['userId'];
+
+        interestedUserIds.add(interestedUserId);
+
+        print('Interested User ID: $interestedUserId');
+      }
+    } else {
+      print('No Interested users found.');
+    }
+    List<UserInfoData> matchedUserss =
+        await matchUsers(otherUsers, currentUser);
+    return matchedUserss;
+  }
+
+  List<UserInfoData> matchedUsers = [];
   //// ----------Matching--------------///
   List<UserInfoData> matchUsers(
       List<UserInfoData> otherUsers, CurrentUser currentUser) {
     // Initialize a list for matched users
-    List<UserInfoData> matchedUsers = [];
+    matchedUsers.clear();
 
+    print(" in future dewlay");
     // Get the current user's country
     String currentUserCountry = currentUser.country;
     String currentUserOccupation = currentUser.occupation;
     String currentUserCaste = currentUser.caste;
     String currentUserGener = currentUser.gender;
     // Check if the current user has a country
-    // if(currentUserGener != otherUsers)
-    // for (UserInfoData otherUser in otherUsers) {
-    //   if (otherUser.gender == currentUserGener) {
-    //     otherUsers.remove(otherUser);
-    //   }
-    // }
+
+    // ignore: curly_braces_in_flow_control_structures
+
     if (currentUserCountry.isNotEmpty && otherUsers.isNotEmpty) {
       for (UserInfoData otherUser in otherUsers) {
-        if (otherUser.country == currentUserCountry) {
-          matchedUsers.add(otherUser);
+        if (otherUser.country == currentUserCountry &&
+            currentUserGener == otherUser.gender) {
+          if (otherUser.occupation == currentUserOccupation ||
+              otherUser.caste == currentUserCaste) {
+            if (interestedUserIds.isNotEmpty) {
+              for (int i = 0; i < interestedUserIds.length; i++) {
+                if (interestedUserIds[i].contains(otherUser.userId)) {
+                  print(" matchec ${interestedUserIds[i]}");
+                } else {
+                  matchedUsers.add(otherUser);
+                }
+              }
+            } else {
+              matchedUsers.add(otherUser);
+            }
+          }
         }
       }
-    } else {
-      for (UserInfoData otherUser in otherUsers) {
-        if (otherUser.occupation == currentUserOccupation ||
-            otherUser.caste == currentUserCaste) {
-          matchedUsers.add(otherUser);
-        }
+    }
+
+    return matchedUsers;
+  }
+
+  //// ----------fitter matches--------------///
+  List<UserInfoData> filterUsersByProfile(
+      List<UserInfoData> otherUsers, PofileController profileController) {
+    List<UserInfoData> matchedUsers = [];
+
+    for (UserInfoData otherUser in otherUsers) {
+      if ((otherUser.country == profileController.countryonly) ||
+          (otherUser.religion == profileController.religions) ||
+          (otherUser.motherTongue == profileController.mothertongue) ||
+          (otherUser.qualification == profileController.qualifications) ||
+          (otherUser.caste == profileController.castee)) {
+        matchedUsers.add(otherUser);
       }
     }
 

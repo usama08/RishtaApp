@@ -1,7 +1,9 @@
+import 'package:easyrishta/View/Dashboard/make_match.dart';
 import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
 import 'package:easyrishta/View/auth/widgets/common_buttons.dart';
 import 'package:easyrishta/View/auth/widgets/dropDown.dart';
 import 'package:easyrishta/common/app_image.dart';
+import 'package:easyrishta/extra/dumydata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -19,10 +21,13 @@ class FilterScreen extends StatefulWidget {
 
 class _FilterScreenState extends State<FilterScreen> {
   var controllerProfile = Get.put(PofileController());
-  double lowheight = 3.5;
-  double upperheight = 6;
-  double lowage = 18;
-  double upperage = 30;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,31 +105,23 @@ class _FilterScreenState extends State<FilterScreen> {
                       borderRadius: BorderRadius.circular(10)),
                   child: Column(
                     children: [
-                      RangeSliderFlutter(
-                        values: [lowheight, upperheight],
-                        rangeSlider: true,
-                        tooltip: RangeSliderFlutterTooltip(
-                          alwaysShowTooltip: false,
-                        ),
-                        max: 6.5,
-                        trackBar: RangeSliderFlutterTrackBar(
-                          activeTrackBar: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: AppColors.themeColor,
-                          ),
-                          inactiveTrackBar: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey,
-                          ),
-                        ),
-                        min: 3,
-                        fontSize: 12,
-                        textBackgroundColor: AppColors.themeColor,
-                        onDragging: (handlerIndex, lowerValue, upperValue) {
-                          lowheight = lowerValue;
-                          upperheight = upperValue;
-                          setState(() {});
+                      RangeSlider(
+                        activeColor: AppColors.themeColor,
+                        values: RangeValues(controllerProfile.lowheight,
+                            controllerProfile.upperheight),
+                        min: 4.0, // Minimum value
+                        max: 7.5, // Maximum value
+                        onChanged: (RangeValues values) {
+                          setState(() {
+                            controllerProfile.lowheight = values.start;
+                            controllerProfile.upperheight = values.end;
+                          });
                         },
+                        labels: RangeLabels(
+                          controllerProfile.lowheight
+                              .toStringAsFixed(1), // Format the labels
+                          controllerProfile.upperheight.toStringAsFixed(1),
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 10, right: 10),
@@ -132,7 +129,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "${lowheight.toStringAsFixed(1)} ft", // Display the lower value
+                              "${controllerProfile.lowheight.toStringAsFixed(1)} ft", // Display the lower value
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -142,7 +139,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       fontWeight: FontWeight.normal),
                             ),
                             Text(
-                              "${upperheight.toStringAsFixed(1)} ft", // Display the upper value
+                              "${controllerProfile.upperheight.toStringAsFixed(1)} ft", // Display the upper value
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -154,31 +151,23 @@ class _FilterScreenState extends State<FilterScreen> {
                           ],
                         ),
                       ),
-                      RangeSliderFlutter(
-                        values: [lowage, upperage],
-                        rangeSlider: true,
-                        tooltip: RangeSliderFlutterTooltip(
-                          alwaysShowTooltip: false,
-                        ),
-                        max: 35,
-                        trackBar: RangeSliderFlutterTrackBar(
-                          activeTrackBar: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: AppColors.themeColor,
-                          ),
-                          inactiveTrackBar: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey,
-                          ),
-                        ),
-                        min: 16,
-                        fontSize: 12,
-                        textBackgroundColor: AppColors.themeColor,
-                        onDragging: (handlerIndex, lowerValue, upperValue) {
-                          lowage = lowerValue;
-                          upperage = upperValue;
-                          setState(() {});
+                      RangeSlider(
+                        activeColor: AppColors.themeColor,
+                        values: RangeValues(controllerProfile.lowage,
+                            controllerProfile.upperage),
+                        min: 18.0, // Minimum value
+                        max: 70.0, // Maximum value
+                        onChanged: (RangeValues values) {
+                          setState(() {
+                            controllerProfile.lowage = values.start;
+                            controllerProfile.upperage = values.end;
+                          });
                         },
+                        labels: RangeLabels(
+                          controllerProfile.lowage
+                              .toStringAsFixed(1), // Format the labels
+                          controllerProfile.upperage.toStringAsFixed(1),
+                        ),
                       ),
                       Padding(
                         padding:
@@ -187,7 +176,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "${lowage.toStringAsFixed(1)} years", // Display the lower value
+                              "${controllerProfile.lowage.toStringAsFixed(1)} years", // Display the lower value
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -197,7 +186,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       fontWeight: FontWeight.normal),
                             ),
                             Text(
-                              "${upperage.toStringAsFixed(1)} years", // Display the upper value
+                              "${controllerProfile.upperage.toStringAsFixed(1)} years", // Display the upper value
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
@@ -358,100 +347,6 @@ class _FilterScreenState extends State<FilterScreen> {
                 CustomDropdown(
                   onchangedF: (String? newValue) {
                     setState(() {
-                      controllerProfile.countryonly = newValue!;
-                      print("Value: ${newValue}");
-                    });
-                  },
-                  selectedValue: controllerProfile.countryonly.toString(),
-                  values: const [
-                    "Pakistan",
-                    "Saudi Arabia",
-                    "Iran",
-                    "Indonesia",
-                    "Egypt",
-                    "Turkey",
-                    "Bangladesh",
-                    "Algeria",
-                    "Iraq",
-                    "Morocco",
-                    "Nigeria"
-                        "Afghanistan",
-                    "Malaysia",
-                    "Uzbekistan",
-                    "Sudan",
-                    "Yemen",
-                    "Syria",
-                    "Jordan",
-                    "Tunisia",
-                    "United Arab Emirates",
-                    "Russia",
-                    "Germany",
-                    "France",
-                    "United Kingdom",
-                    "Italy",
-                    "Spain",
-                    "Ukraine",
-                    "Poland",
-                    "Romania",
-                    "Netherlands",
-                    "Belgium",
-                    "Greece",
-                    "Sweden",
-                    "Portugal",
-                    "Austria",
-                    "Czech Republic",
-                    "Hungary",
-                    "Switzerland",
-                    "Bulgaria",
-                    "Denmark",
-                  ],
-                  labels: const [
-                    "Pakistan",
-                    "Saudi Arabia",
-                    "Iran",
-                    "Indonesia",
-                    "Egypt",
-                    "Turkey",
-                    "Bangladesh",
-                    "Algeria",
-                    "Iraq",
-                    "Morocco",
-                    "Nigeria"
-                        "Afghanistan",
-                    "Malaysia",
-                    "Uzbekistan",
-                    "Sudan",
-                    "Yemen",
-                    "Syria",
-                    "Jordan",
-                    "Tunisia",
-                    "United Arab Emirates",
-                    "Russia",
-                    "Germany",
-                    "France",
-                    "United Kingdom",
-                    "Italy",
-                    "Spain",
-                    "Ukraine",
-                    "Poland",
-                    "Romania",
-                    "Netherlands",
-                    "Belgium",
-                    "Greece",
-                    "Sweden",
-                    "Portugal",
-                    "Austria",
-                    "Czech Republic",
-                    "Hungary",
-                    "Switzerland",
-                    "Bulgaria",
-                    "Denmark",
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                CustomDropdown(
-                  onchangedF: (String? newValue) {
-                    setState(() {
                       controllerProfile.qualifications = newValue!;
                       print("Value: ${newValue}");
                     });
@@ -475,8 +370,11 @@ class _FilterScreenState extends State<FilterScreen> {
                   ],
                 ),
                 SizedBox(height: 10.h),
-                submittButton(context, 378.w, 50.h, AppColors.themeColor, () {},
-                    "Save & Search", AppColors.whiteColor)
+                const CountryOnly(),
+                SizedBox(height: 10.h),
+                submittButton(context, 378.w, 50.h, AppColors.themeColor, () {
+                  Get.to(const MatchesProfile());
+                }, "Save & Search", AppColors.whiteColor)
               ],
             ),
           )

@@ -125,7 +125,9 @@ class _DasboardScreenState extends State<DasboardScreen> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, 'userid');
+                  },
                   child: SvgPicture.asset(
                     AppSvgImages.whatapp,
                     width: 100.0.w,

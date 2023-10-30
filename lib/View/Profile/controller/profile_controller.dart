@@ -7,6 +7,10 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class PofileController extends GetxController {
+  double lowheight = 4.0;
+  double upperheight = 7.5;
+  double lowage = 18.0;
+  double upperage = 30.0;
   var imagepth;
   var countryonly = "Pakistan";
   var formattedFirstfullday = "";
@@ -34,6 +38,7 @@ class PofileController extends GetxController {
   var martialstatuus = "Marital Status";
   var complextion = "Complexion";
   var mothertongue = "Mother Tongue";
+  var filtertongue = "Mother Tongue";
   var religions = "Religion";
   var castee = "Caste";
   var qualifications = "Education*";
