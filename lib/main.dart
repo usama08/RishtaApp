@@ -69,6 +69,10 @@ class MyApp extends StatelessWidget {
                 'allprofile': (context) => const OtherProfile(),
                 'matching': (context) => const MatchesProfile(),
                 'chatroom': (context) => ChatScreen(),
+<<<<<<< HEAD
+=======
+              
+>>>>>>> 188cc981656a1c3aee6aae60d729c9dc81775b6e
                 'forgetpassword': (context) => const ForgetPassword(),
                 'notification': (context) => const NotificationScreen(),
                 'admindashboard': (context) => const AdminDashboard(),
