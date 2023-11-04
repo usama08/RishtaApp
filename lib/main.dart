@@ -1,3 +1,12 @@
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:easyrishta/View/AdminSide/AdminDashboard.dart';
+import 'package:easyrishta/View/AdminSide/userlist.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:easyrishta/View/ChatScreen/chatroom.dart';
 import 'package:easyrishta/View/Dashboard/dashboard_screen.dart';
 import 'package:easyrishta/View/Dashboard/make_match.dart';
@@ -15,13 +24,8 @@ import 'package:easyrishta/View/auth/authsceens/login_Screen.dart';
 import 'package:easyrishta/View/auth/authsceens/signup_screen.dart';
 import 'package:easyrishta/View/auth/authsceens/splash_screen.dart';
 import 'package:easyrishta/View/auth/pinscreen/Otp_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'View/auth/pinscreen/phone_screen.dart';
 import 'enums/app_theme.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +71,8 @@ class MyApp extends StatelessWidget {
                 'chatroom': (context) => ChatScreen(),
                 'forgetpassword': (context) => const ForgetPassword(),
                 'notification': (context) => const NotificationScreen(),
+                'admindashboard': (context) => const AdminDashboard(),
+                'userlist': (context) => UserList(),
               });
         });
   }

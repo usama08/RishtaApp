@@ -132,12 +132,15 @@ class SignupController extends GetxController {
 
   ///===================function for sign in ==============================///
 
+////////////////// -----------    --------------------- //////////
+
   Future<dynamic> signInEmailPassword(context) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: loginemail.text.trim().toString(),
-              password: passworrd.text.trim().toString());
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: loginemail.text.trim().toString(),
+        password: passworrd.text.trim().toString(),
+      );
 
       if (userCredential.user != null) {
         // Navigate to the home page
@@ -155,31 +158,37 @@ class SignupController extends GetxController {
           },
         );
 
-        // await Future.delayed(const Duration(seconds: 3));
-        print("before user ${FirebaseAuth.instance.currentUser!.uid}");
-
-        // var step =
-        //     await getStepFromFirebase(FirebaseAuth.instance.currentUser!.uid);
-        QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
             .collection('user')
-            .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser!.uid)
             .get();
-        print("after --> " + userSnapshot.docs.first["step"].toString());
 
-        if (userSnapshot.docs.first["step"].toString() == "0") {
-          Get.to(() => const ProfileBuild());
-        } else if (userSnapshot.docs.first["step"].toString() == "1") {
-          Get.to(() => const ThirdBuildprofile());
-        } else if (userSnapshot.docs.first["step"].toString() == "2") {
-          Get.to(() => const FourthBuildprofile());
-        } else if (userSnapshot.docs.first["step"].toString() == "3") {
-          Get.to(() => const FifthBuildprofile());
-        } else if (userSnapshot.docs.first["step"].toString() == "4") {
-          Get.to(() => const SixthBuildprofile());
-        } else if (userSnapshot.docs.first["step"].toString() == "5") {
-          Get.to(() => const Addprofileimage());
+        String userRole = userSnapshot['userType'];
+
+        if (userRole == "user") {
+          String userStep =
+              userSnapshot['step'].toString(); // Access the "step" field
+
+          if (userStep == "0") {
+            Get.to(() => const ProfileBuild());
+          } else if (userStep == "1") {
+            Get.to(() => const ThirdBuildprofile());
+          } else if (userStep == "2") {
+            Get.to(() => const FourthBuildprofile());
+          } else if (userStep == "3") {
+            Get.to(() => const FifthBuildprofile());
+          } else if (userStep == "4") {
+            Get.to(() => const SixthBuildprofile());
+          } else if (userStep == "5") {
+            Get.to(() => const Addprofileimage());
+          } else {
+            Navigator.pushNamed(context, 'Dashboard');
+          }
+        } else if (userRole == "admin") {
+          Navigator.pushNamed(context, 'admindashboard');
         } else {
-          Navigator.pushNamed(context, 'Dashboard');
+          // Handle other roles or scenarios
+          print("Unknown role or scenario");
         }
 
         // Navigator.pushReplacement(
@@ -202,6 +211,7 @@ class SignupController extends GetxController {
       return false;
     }
   }
+
   //// ----------------- reset password email -----------------/////
 
   Future<dynamic> sendPasswordResetEmail(BuildContext context) async {
@@ -370,16 +380,19 @@ class SignupController extends GetxController {
   }
 
   //// ----------fitter matches--------------///
-  List<UserInfoData> filterUsersByProfile(
-      List<UserInfoData> otherUsers, PofileController profileController) {
+  List<UserInfoData> filterUsersByProfileAndInterest(
+    List<UserInfoData> otherUsers,
+    PofileController profileController,
+  ) {
     List<UserInfoData> matchedUsers = [];
 
     for (UserInfoData otherUser in otherUsers) {
-      if ((otherUser.country == profileController.countryonly) ||
-          (otherUser.religion == profileController.religions) ||
-          (otherUser.motherTongue == profileController.mothertongue) ||
-          (otherUser.qualification == profileController.qualifications) ||
-          (otherUser.caste == profileController.castee)) {
+      if ((otherUser.country == profileController.countryonly ||
+              otherUser.religion == profileController.religions ||
+              otherUser.motherTongue == profileController.mothertongue ||
+              otherUser.qualification == profileController.qualifications ||
+              otherUser.caste == profileController.castee) &&
+          !interestedUserIds.contains(otherUser.userId)) {
         matchedUsers.add(otherUser);
       }
     }

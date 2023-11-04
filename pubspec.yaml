@@ -55,11 +55,10 @@ dependencies:
   permission_handler: ^11.0.1
   intl: ^0.18.1
   country_picker: ^2.0.21
-
   file_picker: ^6.0.0
-
-
   fluttertoast: ^8.2.2
+  firebase_messaging: ^14.7.2
+
 
 
   

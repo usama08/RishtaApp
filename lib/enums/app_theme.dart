@@ -26,47 +26,47 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     textTheme: const TextTheme().copyWith(
       displayLarge: const TextStyle(
         fontSize: 40,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
       displayMedium: const TextStyle(
         fontSize: 30,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
       displaySmall: const TextStyle(
         fontSize: 24,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
       headlineMedium: const TextStyle(
           fontSize: 20,
-          fontFamily: 'Poppins-Regular',
+          fontFamily: 'Poppins',
           color: AppColors.BlackColor,
           fontWeight: FontWeight.bold),
       headlineSmall: const TextStyle(
         fontSize: 18,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
       titleLarge: const TextStyle(
         fontSize: 16,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
       bodyLarge: const TextStyle(
         fontSize: 18,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
       bodyMedium: const TextStyle(
           fontSize: 14,
-          fontFamily: 'Poppins-Regular',
+          fontFamily: 'Poppins',
           color: AppColors.BlackColor,
           fontWeight: FontWeight.normal),
       bodySmall: const TextStyle(
         fontSize: 12,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.BlackColor,
       ),
     ),
@@ -83,7 +83,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
       titleTextStyle: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins',
         color: AppColors.whiteColor,
       ),
       iconTheme: const IconThemeData(

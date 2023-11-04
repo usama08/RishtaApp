@@ -175,7 +175,8 @@ class _DetailsVerificationScreenState extends State<DetailsVerificationScreen> {
                                 infoDetail(context, "Birthday :",
                                     userData.dateOfBirth),
                                 SizedBox(height: 5.h),
-                                infoDetail(context, "Complexion :", ""),
+                                infoDetail(
+                                    context, "Complexion :", userData.skinTone),
                                 SizedBox(height: 5.h),
                                 infoDetail(
                                     context, "Religion :", userData.religion),

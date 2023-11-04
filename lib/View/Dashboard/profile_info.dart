@@ -9,7 +9,7 @@ import '../../common/app_image.dart';
 class ProfileInfo extends StatelessWidget {
   final UserInfoData userData;
 
-  const ProfileInfo({required this.userData});
+  const ProfileInfo({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class ProfileInfo extends StatelessWidget {
               children: [
                 Container(
                   width: 378.w,
-                  height: 78.h,
+                  height: 90.h,
                   padding: const EdgeInsets.all(8),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -148,7 +148,7 @@ class ProfileInfo extends StatelessWidget {
                         SizedBox(height: 5.h),
                         infoDetail(context, "Birthday :", userData.dateOfBirth),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Complexion :", ""),
+                        infoDetail(context, "Complexion :", userData.skinTone),
                         SizedBox(height: 5.h),
                         infoDetail(context, "Religion :", userData.religion),
                         SizedBox(height: 5.h),

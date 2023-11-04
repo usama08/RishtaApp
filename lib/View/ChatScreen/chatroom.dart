@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
@@ -11,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import '../../models/chatroom.dart';
-import '../../models/message_model.dart';
 
 class Message {
   final String text;

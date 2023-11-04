@@ -2,14 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:easyrishta/common/app_svg.dart';
+import 'package:easyrishta/models/chatroom.dart';
 import 'package:easyrishta/models/info_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-
-import '../../models/chatroom.dart';
-import '../../models/message_model.dart';
 
 class Message {
   final String text;
@@ -19,6 +17,10 @@ class Message {
 }
 
 class AdminChatScreen extends StatefulWidget {
+  final String otherUserId; // Add this field
+
+  AdminChatScreen({required this.otherUserId});
+
   @override
   _AdminChatScreenState createState() => _AdminChatScreenState();
 }
@@ -48,54 +50,23 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
   }
 
   addmsg(String msgs) async {
-    DateTime? timestamp;
-    timestamp = DateTime.now();
-    // Reference to the parent document
-    final parentDocumentRef =
-        FirebaseFirestore.instance.collection('chatrooms').doc(userId);
+    DateTime timestamp = DateTime.now();
+    final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    // Reference to the subcollection
-    final subcollectionRef = parentDocumentRef.collection('messages');
-
-    // Query the subcollection
-    final subcollectionSnapshot = await subcollectionRef.get();
-    if (subcollectionSnapshot.docs.isNotEmpty) {
-      FirebaseFirestore.instance
-          .collection('chatrooms')
-          .doc(userId)
-          .collection('messages')
-        ..add({
-          "sentby": userId,
-          "message": msgs,
-          "dateTime": timestamp.toString(),
-        });
-    } else {
-      FirebaseFirestore.instance
-          .collection('chatrooms')
-          .doc(userId)
-          .collection('messages')
-          .doc();
-      FirebaseFirestore.instance
-          .collection('chatrooms')
-          .doc(userId)
-          .collection('messages')
-        ..add({
-          "sentby": userId,
-          "message": msgs,
-          "dateTime": timestamp.toString(),
-        });
-    }
+    FirebaseFirestore.instance.collection('chat_messages').add({
+      "sentBy": userId, // Mark the message as sent by the current user
+      "message": msgs,
+      "dateTime": timestamp,
+    });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
-
     getCurrentUser();
     super.initState();
   }
 
-  ///////  Cureent user data  ///////////////
+  /// Current user data ///
   UserInfoData? userInfoData;
   Future<void> getCurrentUser() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -105,7 +76,6 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
           await FirebaseFirestore.instance.collection('user').doc(userId).get();
 
       if (userDocument.exists) {
-        // Populate the currentUser using the ChatRoomModel
         userInfoData =
             UserInfoData.fromMap(userDocument.data() as Map<String, dynamic>);
         setState(() {});
@@ -114,58 +84,52 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
     }
   }
 
-  final userId = FirebaseAuth.instance.currentUser!.uid;
   getdata() async {
     DateTime currentDateTime = DateTime.now();
     ChatRoomModel newChatRoom = ChatRoomModel(
-      chatroomid: userId,
+      chatroomid: widget.otherUserId, // Use the other user's ID
       dateTime: currentDateTime.toString(),
       username: userInfoData!.firstname.toString(),
       image: userInfoData!.imagePath.toString(),
     );
+
     await FirebaseFirestore.instance
         .collection("chatrooms")
         .limit(1)
         .get()
-        .then((value) => {
-              if (value.size == 0)
-                {
-                  FirebaseFirestore.instance
-                      .collection('chatrooms')
-                      .doc(userId)
-                      .set(newChatRoom.toMap()),
-                  lodingFalse(),
-                }
-              else
-                {
-                  FirebaseFirestore.instance
-                      .collection("chatrooms")
-                      .where('chatroomid', isEqualTo: userId)
-                      .limit(1)
-                      .get()
-                      .then((value) => {
-                            if (value.size == 0)
-                              {
-                                FirebaseFirestore.instance
-                                    .collection('chatrooms')
-                                    .doc(userId)
-                                    .set(newChatRoom.toMap()),
-                                lodingFalse(),
-                              }
-                            else
-                              {
-                                lodingFalse(),
-                              }
-                          }),
-                  //userid in this chatroom
-
-                  lodingFalse(),
-                }
-            });
+        .then((value) {
+      if (value.size == 0) {
+        FirebaseFirestore.instance
+            .collection('chatrooms')
+            .doc(widget.otherUserId) // Use the other user's ID
+            .set(newChatRoom.toMap());
+        lodingFalse();
+      } else {
+        FirebaseFirestore.instance
+            .collection("chatrooms")
+            .where('chatroomid',
+                isEqualTo: widget.otherUserId) // Use the other user's ID
+            .limit(1)
+            .get()
+            .then((value) {
+          if (value.size == 0) {
+            FirebaseFirestore.instance
+                .collection('chatrooms')
+                .doc(widget.otherUserId) // Use the other user's ID
+                .set(newChatRoom.toMap());
+            lodingFalse();
+          } else {
+            lodingFalse();
+          }
+        });
+        lodingFalse();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -189,9 +153,8 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
       ),
       body: Stack(
         children: [
-          // Background image
           Image.asset(
-            AppImages.background, // Replace with your background image
+            AppImages.background,
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -203,17 +166,61 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
               : Column(
                   children: [
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index];
-                          return ListTile(
-                            title: Text(message.text),
-                            subtitle: Text(
-                              DateFormat('MMM d, hh:mm a')
-                                  .format(message.timestamp),
-                            ),
-                          );
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('chat_messages')
+                            .orderBy('dateTime')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            final messages = snapshot.data!.docs;
+                            List<Widget> messageWidgets = [];
+
+                            for (var message in messages) {
+                              final messageData =
+                                  message.data() as Map<String, dynamic>;
+
+                              final sentBy = messageData['sentBy'];
+                              final messageText = messageData['message'];
+                              final messageTime = messageData['dateTime'];
+
+                              final isCurrentUser = sentBy == userId;
+                              final isOtherUser = sentBy == widget.otherUserId;
+
+                              messageWidgets.add(
+                                ListTile(
+                                  title: Container(
+                                    alignment: isCurrentUser
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    child: Text(messageText),
+                                  ),
+                                  subtitle: Text(
+                                    DateFormat('MMM d, hh:mm a').format(
+                                      (messageTime as Timestamp).toDate(),
+                                    ),
+                                  ),
+                                  trailing: isCurrentUser
+                                      ? const Icon(
+                                          Icons.check,
+                                          color: Colors.green,
+                                        )
+                                      : null,
+                                ),
+                              );
+                            }
+
+                            return ListView(
+                              padding: const EdgeInsets.only(bottom: 100),
+                              children: messageWidgets,
+                            );
+                          }
                         },
                       ),
                     ),
@@ -245,8 +252,7 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
                               width: 40,
                               height: 40,
                               margin: const EdgeInsets.only(right: 10),
-                              child: SvgPicture.asset(AppSvgImages
-                                  .sendbtn), // Replace with your SVG asset
+                              child: SvgPicture.asset(AppSvgImages.sendbtn),
                             ),
                           ),
                         ],
