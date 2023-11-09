@@ -187,7 +187,7 @@ class _MatchesProfileState extends State<MatchesProfile> {
       );
     }
     filter();
-    if (signupController.filterApplied) {
+    if (!signupController.filterApplied) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.whiteColor,

@@ -310,7 +310,7 @@ class SignupController extends GetxController {
   }
 
   List<String> interestedUserIds = [];
-  getInterestedUsers(
+  Future<List<UserInfoData>> getInterestedUsers(
       List<UserInfoData> otherUsers, CurrentUser currentUser) async {
     interestedUserIds.clear();
     final String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -333,36 +333,30 @@ class SignupController extends GetxController {
     } else {
       print('No Interested users found.');
     }
-    List<UserInfoData> matchedUserss =
-        await matchUsers(otherUsers, currentUser);
-    return matchedUserss;
+
+    List<UserInfoData> matchedUsers = await matchUsers(otherUsers, currentUser);
+
+    // Remove interested users from matched list
+    matchedUsers.removeWhere((user) => interestedUserIds.contains(user.userId));
+
+    return matchedUsers;
   }
 
-  List<UserInfoData> matchedUsers = [];
-  //// ----------Matching--------------///
-  List<UserInfoData> matchUsers(
-      List<UserInfoData> otherUsers, CurrentUser currentUser) {
-    // Initialize a list for matched users
-    matchedUsers.clear();
+  Future<List<UserInfoData>> matchUsers(
+      List<UserInfoData> otherUsers, CurrentUser currentUser) async {
+    List<UserInfoData> matchedUsers = [];
 
-    // Get the current user's country and gender
     String currentUserCountry = currentUser.country;
-    String currentUserGener = currentUser.gender;
+    String currentUserGender = currentUser.gender;
 
     if (currentUserCountry.isNotEmpty && otherUsers.isNotEmpty) {
       for (UserInfoData otherUser in otherUsers) {
         if (otherUser.country == currentUserCountry &&
-            currentUserGener != otherUser.gender) {
-          // If the genders are different, consider them as potential matches
-          if (interestedUserIds.isNotEmpty) {
-            for (int i = 0; i < interestedUserIds.length; i++) {
-              if (interestedUserIds[i].contains(otherUser.userId)) {
-                print(" matchec ${interestedUserIds[i]}");
-              } else {
-                matchedUsers.add(otherUser);
-              }
-            }
-          } else {
+            currentUserGender != otherUser.gender) {
+          if (interestedUserIds.isNotEmpty &&
+              !interestedUserIds.contains(otherUser.userId)) {
+            matchedUsers.add(otherUser);
+          } else if (interestedUserIds.isEmpty) {
             matchedUsers.add(otherUser);
           }
         }
