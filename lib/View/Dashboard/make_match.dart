@@ -188,74 +188,79 @@ class _MatchesProfileState extends State<MatchesProfile> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
-        centerTitle: true,
-        title: Text(
-          'Make Match',
-          style: Theme.of(context).textTheme.displayMedium!.copyWith(
-              color: AppColors.BlackColor,
-              fontFamily: 'Poppins-Bold',
-              fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: AppColors.BlackColor,
-            size: 32,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.whiteColor,
+          centerTitle: true,
+          title: Text(
+            'Make Match',
+            style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                color: AppColors.BlackColor,
+                fontFamily: 'Poppins-Bold',
+                fontWeight: FontWeight.bold),
           ),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const DasboardScreen(),
-              ),
-            );
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
+          leading: IconButton(
             icon: const Icon(
-              Icons.filter_alt_outlined,
-              color: Colors.red,
-              size: 35,
+              Icons.arrow_back,
+              color: AppColors.BlackColor,
+              size: 32,
             ),
             onPressed: () {
-              controllermatch.resetFilterValues();
-              Get.to(const FilterScreen());
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const DasboardScreen(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: matchedUsers.length,
-              itemBuilder: (context, index) {
-                UserInfoData match = matchedUsers[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MatchesProfiledetails(
-                          match: match,
-                        ),
-                      ),
-                    );
-                  },
-                  child: MatchCard(
-                    match: match,
-                    onInterested: () {
-                      removeInterested(match);
-                    },
-                  ),
-                );
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.red,
+                size: 35,
+              ),
+              onPressed: () {
+                controllermatch.resetFilterValues();
+                Get.to(const FilterScreen());
               },
             ),
-          ),
-        ],
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: matchedUsers.length,
+                itemBuilder: (context, index) {
+                  UserInfoData match = matchedUsers[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MatchesProfiledetails(
+                            match: match,
+                          ),
+                        ),
+                      );
+                    },
+                    child: MatchCard(
+                      match: match,
+                      onInterested: () {
+                        removeInterested(match);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

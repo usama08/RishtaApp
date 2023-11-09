@@ -184,110 +184,115 @@ class _MatchesProfilefilterScreenfilterState
 
     filter();
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
-        centerTitle: true,
-        title: Text(
-          'Make Match Filter',
-          style: Theme.of(context).textTheme.displayMedium!.copyWith(
-              color: AppColors.BlackColor,
-              fontFamily: 'Poppins-Bold',
-              fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: AppColors.BlackColor,
-            size: 32,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.whiteColor,
+          centerTitle: true,
+          title: Text(
+            'Make Match Filter',
+            style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                color: AppColors.BlackColor,
+                fontFamily: 'Poppins-Bold',
+                fontWeight: FontWeight.bold),
           ),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const DasboardScreen(),
-              ),
-            );
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
+          leading: IconButton(
             icon: const Icon(
-              Icons.filter_alt_outlined,
-              color: Colors.red,
-              size: 35,
+              Icons.arrow_back,
+              color: AppColors.BlackColor,
+              size: 32,
             ),
             onPressed: () {
-              controllermatch.resetFilterValues();
-              Get.to(const FilterScreen());
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const DasboardScreen(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          if (signupController.filterApplied && matchedUsers.isEmpty)
-            const Column(
-              children: [
-                Center(
-                  child: Text(
-                    'No matches found with the applied filter.',
-                    style: TextStyle(fontSize: 18, color: Colors.red),
-                  ),
-                ),
-              ],
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.red,
+                size: 35,
+              ),
+              onPressed: () {
+                controllermatch.resetFilterValues();
+                Get.to(const FilterScreen());
+              },
             ),
-          if (signupController.filterApplied)
-            Container(
-              height: 40.h,
-              color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ],
+        ),
+        body: Column(
+          children: [
+            if (signupController.filterApplied && matchedUsers.isEmpty)
+              const Column(
                 children: [
-                  const Text(
-                    'Filter List',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 25,
+                  Center(
+                    child: Text(
+                      'No matches found with the applied filter.',
+                      style: TextStyle(fontSize: 18, color: Colors.red),
                     ),
-                    onPressed: () {
-                      controllermatch.resetFilterValues();
-                      Get.to(const MatchesProfile());
-                    },
                   ),
                 ],
               ),
-            ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: matchedUsers.length,
-              itemBuilder: (context, index) {
-                UserInfoData match = matchedUsers[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MatchesProfiledetails(
-                          match: match,
-                        ),
+            if (signupController.filterApplied)
+              Container(
+                height: 40.h,
+                color: Colors.red,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Filter List',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 25,
                       ),
-                    );
-                  },
-                  child: MatchCard(
-                    match: match,
-                    onInterested: () {
-                      removeInterested(match);
+                      onPressed: () {
+                        controllermatch.resetFilterValues();
+                        Get.to(const MatchesProfile());
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: matchedUsers.length,
+                itemBuilder: (context, index) {
+                  UserInfoData match = matchedUsers[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MatchesProfiledetails(
+                            match: match,
+                          ),
+                        ),
+                      );
                     },
-                  ),
-                );
-              },
+                    child: MatchCard(
+                      match: match,
+                      onInterested: () {
+                        removeInterested(match);
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
