@@ -1,7 +1,9 @@
+import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
 import 'package:easyrishta/common/app_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import '../../common/app_colors.dart';
 import '../../common/app_image.dart';
 
@@ -13,6 +15,7 @@ class DasboardScreen extends StatefulWidget {
 }
 
 class _DasboardScreenState extends State<DasboardScreen> {
+  var controllermatch = Get.put(PofileController());
   Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,
@@ -98,6 +101,7 @@ class _DasboardScreenState extends State<DasboardScreen> {
               children: [
                 InkWell(
                   onTap: () {
+                    controllermatch.resetFilterValues();
                     Navigator.pushNamed(context, 'matching');
                   },
                   child: SvgPicture.asset(

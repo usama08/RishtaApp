@@ -73,7 +73,7 @@ class _DetailsVerificationScreenState extends State<DetailsVerificationScreen> {
                       children: [
                         Container(
                           width: 378.w,
-                          height: 78.h,
+                          height: 85.h,
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),

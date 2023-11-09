@@ -79,6 +79,42 @@ class PofileController extends GetxController {
     }
   }
 
+  void resetFilterValues() {
+    lowheight = 4.0;
+    upperheight = 7.5;
+    lowage = 18.0;
+    upperage = 30.0;
+    countryonly = "Pakistan";
+    maritialstatus = "Separated";
+    totalchild = "Total Children";
+    statuschild = "Status Children";
+    qualification = "Education*";
+    income = "Employee in";
+    occupation = "Occupation";
+    designation = "Designation";
+    height = "Height *";
+    weight = "Weight *";
+    habits = "Eating Habits *";
+    smoking = "Smoking *";
+    drinking = "Drinking *";
+    bodytype = "Body Type *";
+    skintone = "Skin Tone *";
+    horoscope = 'Horoscope';
+    manglik = "Manglik";
+    star = "Star";
+    moonsign = "Moon Sign";
+    martialstatuus = "Marital Status";
+    complextion = "Complexion";
+    mothertongue = "Mother Tongue";
+    filtertongue = "Mother Tongue";
+    religions = "Religion";
+    castee = "Caste";
+    qualifications = "Education*";
+    caste = "Caste";
+    religion = "Religion";
+    tongue = "Mother Tongue";
+  }
+
   /////////////// -----------Step 2 ------------- /////////////////
   Future<void> updateUserDatastep2(String userId) async {
     try {

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/View/Dashboard/filter_screen.dart';
 import 'package:easyrishta/View/Dashboard/matches_profilesdetails.dart';
+import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
 import 'package:easyrishta/View/auth/controller/auth_controller.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
@@ -14,7 +15,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class MatchesProfile extends StatefulWidget {
-  const MatchesProfile({super.key});
+  const MatchesProfile({Key? key});
 
   @override
   State<MatchesProfile> createState() => _MatchesProfileState();
@@ -22,6 +23,7 @@ class MatchesProfile extends StatefulWidget {
 
 class _MatchesProfileState extends State<MatchesProfile> {
   final SignupController signupController = Get.find();
+  var controllermatch = Get.put(PofileController());
   CurrentUser? currentUser;
   bool isLoading = true;
   List<UserInfoData> matchedUsers = [];
@@ -43,10 +45,53 @@ class _MatchesProfileState extends State<MatchesProfile> {
     });
     print("check==> 2");
     getUserseithoutMatching();
+    filter();
+  }
+
+  void filter() {
+    print("Filter Applied: ${signupController.filterApplied}");
+    if (controllermatch.martialstatuus.contains("Martial Status") ||
+        controllermatch.upperheight == 7.5 ||
+        controllermatch.lowheight == 4.0 ||
+        controllermatch.upperage == 60.0 ||
+        controllermatch.lowage == 18.0 ||
+        controllermatch.complextion == "Complexion" ||
+        controllermatch.mothertongue == "Mother Tongue" ||
+        controllermatch.religions == "Religion" ||
+        controllermatch.castee == "Caste" ||
+        controllermatch.qualifications == "Education*" ||
+        controllermatch.countryonly == "Pakistan") {
+      signupController.filterApplied = false;
+    } else {
+      signupController.filterApplied = true;
+
+      // Apply the filter
+      final filteredUsers = signupController.filterUsersByProfileAndInterest(
+        matchedUsers,
+        controllermatch,
+      );
+
+      print("Filtered Users Count: $filteredUsers.length");
+
+      setState(() {
+        matchedUsers = filteredUsers;
+      });
+    }
+  }
+
+  List<UserInfoData> filterUsersByProfileAndInterest(
+    List<UserInfoData> users,
+  ) {
+    List<UserInfoData> filteredUsers = [];
+    // ... (filtering logic)
+
+    print("Filtered Users Count: ${filteredUsers.length}");
+
+    return filteredUsers;
   }
 
   getUserseithoutMatching() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     if (currentUser != null) {
       matchedUsers = await signupController.getInterestedUsers(
         otherUser,
@@ -92,6 +137,10 @@ class _MatchesProfileState extends State<MatchesProfile> {
     });
   }
 
+  ongoback() {
+    print("ongoBack");
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading || currentUser == null) {
@@ -100,9 +149,10 @@ class _MatchesProfileState extends State<MatchesProfile> {
           title: Text(
             'Make Match',
             style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                color: AppColors.BlackColor,
-                fontFamily: 'Poppins-Bold',
-                fontWeight: FontWeight.bold),
+                  color: AppColors.BlackColor,
+                  fontFamily: 'Poppins-Bold',
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           centerTitle: true,
           leading: IconButton(
@@ -112,7 +162,7 @@ class _MatchesProfileState extends State<MatchesProfile> {
               size: 32,
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.until((route) => route.isFirst);
             },
           ),
           actions: <Widget>[
@@ -123,7 +173,10 @@ class _MatchesProfileState extends State<MatchesProfile> {
                 size: 35,
               ),
               onPressed: () {
-                Get.to(const FilterScreen());
+                setState(() {
+                  controllermatch.resetFilterValues();
+                });
+                Get.to(const FilterScreen())!.then((value) => ongoback());
               },
             ),
           ],
@@ -133,12 +186,14 @@ class _MatchesProfileState extends State<MatchesProfile> {
         ),
       );
     }
-    return Scaffold(
+    filter();
+    if (signupController.filterApplied) {
+      return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.whiteColor,
           centerTitle: true,
           title: Text(
-            'Make Match',
+            'Filter',
             style: Theme.of(context).textTheme.displayMedium!.copyWith(
                 color: AppColors.BlackColor,
                 fontFamily: 'Poppins-Bold',
@@ -162,35 +217,111 @@ class _MatchesProfileState extends State<MatchesProfile> {
                 size: 35,
               ),
               onPressed: () {
+                controllermatch.resetFilterValues();
                 Get.to(const FilterScreen());
               },
             ),
           ],
         ),
-        body: ListView.builder(
-          itemCount: matchedUsers.length,
-          itemBuilder: (context, index) {
-            UserInfoData match = matchedUsers[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MatchesProfiledetails(
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: matchedUsers.length,
+                itemBuilder: (context, index) {
+                  UserInfoData match = matchedUsers[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MatchesProfiledetails(
+                            match: match,
+                          ),
+                        ),
+                      );
+                    },
+                    child: MatchCard(
                       match: match,
+                      onInterested: () {
+                        removeInterested(match);
+                      },
                     ),
-                  ),
-                );
-              },
-              child: MatchCard(
-                match: match,
-                onInterested: () {
-                  removeInterested(match);
+                  );
                 },
               ),
-            );
-          },
-        ));
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.whiteColor,
+          centerTitle: true,
+          title: Text(
+            'Match',
+            style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                color: AppColors.BlackColor,
+                fontFamily: 'Poppins-Bold',
+                fontWeight: FontWeight.bold),
+          ),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.BlackColor,
+              size: 32,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.red,
+                size: 35,
+              ),
+              onPressed: () {
+                controllermatch.resetFilterValues();
+                Get.to(const FilterScreen());
+              },
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: matchedUsers.length,
+                itemBuilder: (context, index) {
+                  UserInfoData match = matchedUsers[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MatchesProfiledetails(
+                            match: match,
+                          ),
+                        ),
+                      );
+                    },
+                    child: MatchCard(
+                      match: match,
+                      onInterested: () {
+                        removeInterested(match);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void removeInterested(UserInfoData match) {
@@ -210,9 +341,6 @@ class _MatchesProfileState extends State<MatchesProfile> {
       isLoading = false;
     });
     getUserseithoutMatching();
-    // setState(() {
-    //   matchedUsers.removeWhere((user) => user.userId == match.userId);
-    // });
   }
 }
 

@@ -18,6 +18,7 @@ class SignupController extends GetxController {
   var profilecontroller = Get.put(PofileController());
   RxBool isLoading = false.obs;
   bool shouldApplyFilter = false;
+  bool filterApplied = false;
   // RxBool isMalePressed = false.obs;
   // RxBool isFemalePressed = false.obs;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -344,33 +345,25 @@ class SignupController extends GetxController {
     // Initialize a list for matched users
     matchedUsers.clear();
 
-    print(" in future dewlay");
-    // Get the current user's country
+    // Get the current user's country and gender
     String currentUserCountry = currentUser.country;
-    String currentUserOccupation = currentUser.occupation;
-    String currentUserCaste = currentUser.caste;
     String currentUserGener = currentUser.gender;
-    // Check if the current user has a country
-
-    // ignore: curly_braces_in_flow_control_structures
 
     if (currentUserCountry.isNotEmpty && otherUsers.isNotEmpty) {
       for (UserInfoData otherUser in otherUsers) {
         if (otherUser.country == currentUserCountry &&
-            currentUserGener == otherUser.gender) {
-          if (otherUser.occupation == currentUserOccupation ||
-              otherUser.caste == currentUserCaste) {
-            if (interestedUserIds.isNotEmpty) {
-              for (int i = 0; i < interestedUserIds.length; i++) {
-                if (interestedUserIds[i].contains(otherUser.userId)) {
-                  print(" matchec ${interestedUserIds[i]}");
-                } else {
-                  matchedUsers.add(otherUser);
-                }
+            currentUserGener != otherUser.gender) {
+          // If the genders are different, consider them as potential matches
+          if (interestedUserIds.isNotEmpty) {
+            for (int i = 0; i < interestedUserIds.length; i++) {
+              if (interestedUserIds[i].contains(otherUser.userId)) {
+                print(" matchec ${interestedUserIds[i]}");
+              } else {
+                matchedUsers.add(otherUser);
               }
-            } else {
-              matchedUsers.add(otherUser);
             }
+          } else {
+            matchedUsers.add(otherUser);
           }
         }
       }
