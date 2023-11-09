@@ -1,3 +1,4 @@
+import 'package:easyrishta/View/Dashboard/filter_matchingscren.dart';
 import 'package:easyrishta/View/Dashboard/make_match.dart';
 import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
 import 'package:easyrishta/View/auth/widgets/common_buttons.dart';
@@ -373,7 +374,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 const CountryOnly(),
                 SizedBox(height: 10.h),
                 submittButton(context, 378.w, 50.h, AppColors.themeColor, () {
-                  Get.to(const MatchesProfile());
+                  Get.to(const MatchesProfilefilterScreen());
                 }, "Save & Search", AppColors.whiteColor)
               ],
             ),

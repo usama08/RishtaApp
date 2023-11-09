@@ -54,7 +54,7 @@ class _MatchesProfiledetailsState extends State<MatchesProfiledetails> {
               children: [
                 Container(
                   width: 378.w,
-                  height: 78.h,
+                  height: 85.h,
                   padding: const EdgeInsets.all(8),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -153,7 +153,8 @@ class _MatchesProfiledetailsState extends State<MatchesProfiledetails> {
                         infoDetail(
                             context, "Birthday :", widget.match.dateOfBirth),
                         SizedBox(height: 5.h),
-                        infoDetail(context, "Complexion :", ""),
+                        infoDetail(
+                            context, "Complexion :", widget.match.skinTone),
                         SizedBox(height: 5.h),
                         infoDetail(
                             context, "Religion :", widget.match.religion),
