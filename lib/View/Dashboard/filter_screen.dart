@@ -22,11 +22,17 @@ class FilterScreen extends StatefulWidget {
 
 class _FilterScreenState extends State<FilterScreen> {
   var controllerProfile = Get.put(PofileController());
-
+  List<String> heights = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    for (int feet = 4; feet <= 7; feet++) {
+      for (int inches = 0; inches < 12; inches++) {
+        heights.add('$feet ft $inches in');
+      }
+    }
+    controllerProfile.height = heights[0];
   }
 
   @override
@@ -112,8 +118,10 @@ class _FilterScreenState extends State<FilterScreen> {
                       children: [
                         RangeSlider(
                           activeColor: AppColors.themeColor,
-                          values: RangeValues(controllerProfile.lowheight,
-                              controllerProfile.upperheight),
+                          values: RangeValues(
+                            controllerProfile.lowheight,
+                            controllerProfile.upperheight,
+                          ),
                           min: 4.0, // Minimum value
                           max: 7.5, // Maximum value
                           onChanged: (RangeValues values) {
@@ -123,18 +131,18 @@ class _FilterScreenState extends State<FilterScreen> {
                             });
                           },
                           labels: RangeLabels(
-                            controllerProfile.lowheight
-                                .toStringAsFixed(1), // Format the labels
-                            controllerProfile.upperheight.toStringAsFixed(1),
+                            '${controllerProfile.lowheight.floor()} ft ${((controllerProfile.lowheight - controllerProfile.lowheight.floor()) * 12).round()} in',
+                            '${controllerProfile.upperheight.floor()} ft ${((controllerProfile.upperheight - controllerProfile.upperheight.floor()) * 12).round()} in',
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 10, right: 10),
+                          padding:
+                              EdgeInsets.only(left: 10, right: 10, bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "${controllerProfile.lowheight.toStringAsFixed(1)} ft", // Display the lower value
+                                '${controllerProfile.lowheight.floor()} ft ${((controllerProfile.lowheight - controllerProfile.lowheight.floor()) * 12).round()} in',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayMedium!
@@ -144,7 +152,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                         fontWeight: FontWeight.normal),
                               ),
                               Text(
-                                "${controllerProfile.upperheight.toStringAsFixed(1)} ft", // Display the upper value
+                                '${controllerProfile.upperheight.floor()} ft ${((controllerProfile.upperheight - controllerProfile.upperheight.floor()) * 12).round()} in', // Display the upper value
                                 style: Theme.of(context)
                                     .textTheme
                                     .displayMedium!

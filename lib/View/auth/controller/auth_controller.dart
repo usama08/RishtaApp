@@ -366,6 +366,16 @@ class SignupController extends GetxController {
     return matchedUsers;
   }
 
+  double convertHeightStringToDouble(String heightString) {
+    // Split the string into feet and inches
+    List<String> parts = heightString.split(' ');
+    int feet = int.parse(parts[0]);
+    int inches = int.parse(parts[2]);
+
+    // Convert to double (assuming 12 inches in a foot)
+    return feet + (inches / 12);
+  }
+
   //// ----------fitter matches--------------///
   List<UserInfoData> filterUsersByProfileAndInterest(
     List<UserInfoData> otherUsers,
@@ -374,10 +384,14 @@ class SignupController extends GetxController {
     List<UserInfoData> matchedUsers = [];
 
     for (UserInfoData otherUser in otherUsers) {
+      double otherUserHeight = convertHeightStringToDouble(otherUser.height);
+
       if ((otherUser.country == profileController.countryonly ||
               otherUser.religion == profileController.religions ||
               otherUser.motherTongue == profileController.mothertongue ||
               otherUser.qualification == profileController.qualifications ||
+              (otherUserHeight >= profileController.lowheight &&
+                  otherUserHeight <= profileController.upperheight) ||
               otherUser.caste == profileController.castee) &&
           !interestedUserIds.contains(otherUser.userId)) {
         matchedUsers.add(otherUser);

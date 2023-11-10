@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easyrishta/View/Profile/controller/profile_controller.dart';
 import 'package:easyrishta/common/app_svg.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,9 @@ class _DasboardScreenState extends State<DasboardScreen> {
                     )),
             actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () {
+                  exit(0);
+                },
                 child: Text('Yes',
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                           fontSize: 18,

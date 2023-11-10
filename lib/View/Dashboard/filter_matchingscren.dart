@@ -56,17 +56,17 @@ class _MatchesProfilefilterScreenfilterState
   }
 
   void filter() {
-    if (controllermatch.martialstatuus.contains("Martial Status") ||
+    if (controllermatch.martialstatuus.contains("Martial Status") &&
         controllermatch.upperheight == 7.5 &&
-            controllermatch.lowheight == 4.0 &&
-            controllermatch.upperage == 60.0 &&
-            controllermatch.lowage == 18.0 &&
-            controllermatch.complextion == "Complexion" &&
-            controllermatch.mothertongue == "Mother Tongue" &&
-            controllermatch.religions == "Religion" &&
-            controllermatch.castee == "Caste" &&
-            controllermatch.qualifications == "Education*" &&
-            controllermatch.countryonly == "Pakistan") {
+        controllermatch.lowheight == 4.0 &&
+        controllermatch.upperage == 60.0 &&
+        controllermatch.lowage == 18.0 &&
+        controllermatch.complextion == "Complexion" &&
+        controllermatch.mothertongue == "Mother Tongue" &&
+        controllermatch.religions == "Religion" &&
+        controllermatch.castee == "Caste" &&
+        controllermatch.qualifications == "Education*" &&
+        controllermatch.countryonly == "Pakistan") {
       signupController.filterApplied = false;
     } else {
       signupController.filterApplied = true;
