@@ -53,7 +53,11 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
     DateTime timestamp = DateTime.now();
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    FirebaseFirestore.instance.collection('chat_messages').add({
+    FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(widget.otherUserId)
+        .collection('messages')
+        .add({
       "sentBy": userId, // Mark the message as sent by the current user
       "message": msgs,
       "dateTime": timestamp,
@@ -95,12 +99,15 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
 
     await FirebaseFirestore.instance
         .collection("chatrooms")
-        .limit(1)
+        .doc(widget.otherUserId)
+        .collection('messages')
         .get()
         .then((value) {
       if (value.size == 0) {
         FirebaseFirestore.instance
             .collection('chatrooms')
+            .doc(widget.otherUserId)
+            .collection('messages')
             .doc(widget.otherUserId) // Use the other user's ID
             .set(newChatRoom.toMap());
         lodingFalse();
@@ -168,7 +175,9 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
-                            .collection('chat_messages')
+                            .collection("chatrooms")
+                            .doc(widget.otherUserId)
+                            .collection('messages')
                             .orderBy('dateTime')
                             .snapshots(),
                         builder: (context, snapshot) {

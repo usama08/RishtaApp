@@ -165,7 +165,6 @@ class SignupController extends GetxController {
             .get();
 
         String userRole = userSnapshot['userType'];
-
         if (userRole == "user") {
           String userStep =
               userSnapshot['step'].toString(); // Access the "step" field

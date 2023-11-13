@@ -279,7 +279,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
-                            ),
+                              ),
                           ),
                           InkWell(
                             onTap: _sendMessage,
