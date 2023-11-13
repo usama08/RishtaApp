@@ -17,7 +17,7 @@ class Message {
 }
 
 class AdminChatScreen extends StatefulWidget {
-  final String otherUserId; // Add this field
+  final String otherUserId;
 
   AdminChatScreen({required this.otherUserId});
 
@@ -29,6 +29,7 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool isLoading = true;
   List<Message> messages = [];
+  final ScrollController _scrollController = ScrollController();
 
   void _sendMessage() {
     String messageText = _messageController.text.trim();
@@ -58,7 +59,7 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
         .doc(widget.otherUserId)
         .collection('messages')
         .add({
-      "sentBy": userId, // Mark the message as sent by the current user
+      "sentBy": userId,
       "message": msgs,
       "dateTime": timestamp,
     });
@@ -70,8 +71,8 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
     super.initState();
   }
 
-  /// Current user data ///
   UserInfoData? userInfoData;
+
   Future<void> getCurrentUser() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
@@ -91,7 +92,7 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
   getdata() async {
     DateTime currentDateTime = DateTime.now();
     ChatRoomModel newChatRoom = ChatRoomModel(
-      chatroomid: widget.otherUserId, // Use the other user's ID
+      chatroomid: widget.otherUserId,
       dateTime: currentDateTime.toString(),
       username: userInfoData!.firstname.toString(),
       image: userInfoData!.imagePath.toString(),
@@ -108,21 +109,20 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
             .collection('chatrooms')
             .doc(widget.otherUserId)
             .collection('messages')
-            .doc(widget.otherUserId) // Use the other user's ID
+            .doc(widget.otherUserId)
             .set(newChatRoom.toMap());
         lodingFalse();
       } else {
         FirebaseFirestore.instance
             .collection("chatrooms")
-            .where('chatroomid',
-                isEqualTo: widget.otherUserId) // Use the other user's ID
+            .where('chatroomid', isEqualTo: widget.otherUserId)
             .limit(1)
             .get()
             .then((value) {
           if (value.size == 0) {
             FirebaseFirestore.instance
                 .collection('chatrooms')
-                .doc(widget.otherUserId) // Use the other user's ID
+                .doc(widget.otherUserId)
                 .set(newChatRoom.toMap());
             lodingFalse();
           } else {
@@ -189,45 +189,59 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
                             return Text('Error: ${snapshot.error}');
                           } else {
                             final messages = snapshot.data!.docs;
-                            List<Widget> messageWidgets = [];
 
-                            for (var message in messages) {
-                              final messageData =
-                                  message.data() as Map<String, dynamic>;
-
-                              final sentBy = messageData['sentBy'];
-                              final messageText = messageData['message'];
-                              final messageTime = messageData['dateTime'];
-
-                              final isCurrentUser = sentBy == userId;
-                              final isOtherUser = sentBy == widget.otherUserId;
-
-                              messageWidgets.add(
-                                ListTile(
-                                  title: Container(
-                                    alignment: isCurrentUser
-                                        ? Alignment.centerRight
-                                        : Alignment.centerLeft,
-                                    child: Text(messageText),
-                                  ),
-                                  subtitle: Text(
-                                    DateFormat('MMM d, hh:mm a').format(
-                                      (messageTime as Timestamp).toDate(),
-                                    ),
-                                  ),
-                                  trailing: isCurrentUser
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : null,
-                                ),
-                              );
-                            }
+                            WidgetsBinding.instance!.addPostFrameCallback((_) {
+                              _scrollController.jumpTo(
+                                  _scrollController.position.maxScrollExtent);
+                            });
 
                             return ListView(
+                              controller: _scrollController,
                               padding: const EdgeInsets.only(bottom: 100),
-                              children: messageWidgets,
+                              children: messages.map((message) {
+                                final messageData =
+                                    message.data() as Map<String, dynamic>;
+                                final sentBy = messageData['sentBy'];
+                                final messageText = messageData['message'];
+                                final messageTime = messageData['dateTime'];
+                                final isCurrentUser = sentBy == userId;
+
+                                return Column(
+                                  crossAxisAlignment: isCurrentUser
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    ListTile(
+                                      title: Container(
+                                        width: 120,
+                                        alignment: isCurrentUser
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                        child: Text(messageText),
+                                      ),
+                                      trailing: isCurrentUser
+                                          ? const Icon(
+                                              Icons.check,
+                                              color: Colors.green,
+                                            )
+                                          : null,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16, right: 16),
+                                      child: Text(
+                                        DateFormat('MMM d, hh:mm a').format(
+                                          (messageTime as Timestamp).toDate(),
+                                        ),
+                                        textAlign: isCurrentUser
+                                            ? TextAlign.right
+                                            : TextAlign.left,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                );
+                              }).toList(),
                             );
                           }
                         },

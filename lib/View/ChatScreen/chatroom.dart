@@ -18,7 +18,6 @@ class Message {
 
 class ChatScreen extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
   _ChatScreenState createState() => _ChatScreenState();
 }
 
@@ -26,6 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool isLoading = true;
   List<Message> messages = [];
+  final ScrollController _scrollController = ScrollController();
 
   void _sendMessage() {
     String messageText = _messageController.text.trim();
@@ -52,10 +52,8 @@ class _ChatScreenState extends State<ChatScreen> {
     final parentDocumentRef =
         FirebaseFirestore.instance.collection('chatrooms').doc(userId);
 
-    // Reference to the subcollection
     final subcollectionRef = parentDocumentRef.collection('messages');
 
-    // Query the subcollection
     final subcollectionSnapshot = await subcollectionRef.get();
     if (subcollectionSnapshot.docs.isNotEmpty) {
       FirebaseFirestore.instance
@@ -87,32 +85,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     getCurrentUser();
     super.initState();
   }
 
-  ///////  Cureent user data  ///////////////
   UserInfoData? userInfoData;
-  Future<void> getCurrentUser() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    if (userId != null) {
-      DocumentSnapshot userDocument =
-          await FirebaseFirestore.instance.collection('user').doc(userId).get();
-
-      if (userDocument.exists) {
-        // Populate the currentUser using the ChatRoomModel
-        userInfoData =
-            UserInfoData.fromMap(userDocument.data() as Map<String, dynamic>);
-        setState(() {});
-      }
-      getdata();
-    }
-  }
-
   final userId = FirebaseAuth.instance.currentUser!.uid;
+
   getdata() async {
     DateTime currentDateTime = DateTime.now();
     ChatRoomModel newChatRoom = ChatRoomModel(
@@ -155,11 +134,25 @@ class _ChatScreenState extends State<ChatScreen> {
                                 lodingFalse(),
                               }
                           }),
-                  //userid in this chatroom
-
                   lodingFalse(),
                 }
             });
+  }
+
+  Future<void> getCurrentUser() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    if (userId != null) {
+      DocumentSnapshot userDocument =
+          await FirebaseFirestore.instance.collection('user').doc(userId).get();
+
+      if (userDocument.exists) {
+        userInfoData =
+            UserInfoData.fromMap(userDocument.data() as Map<String, dynamic>);
+        setState(() {});
+      }
+      getdata();
+    }
   }
 
   @override
@@ -205,7 +198,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             .collection('chatrooms')
                             .doc(userId)
                             .collection('messages')
-                            .orderBy('dateTime') // Order messages by timestamp
+                            .orderBy('dateTime')
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -216,44 +209,58 @@ class _ChatScreenState extends State<ChatScreen> {
                             return Text('Error: ${snapshot.error}');
                           } else {
                             final messages = snapshot.data!.docs;
-                            List<Widget> messageWidgets = [];
 
-                            for (var message in messages) {
-                              final messageData =
-                                  message.data() as Map<String, dynamic>;
-
-                              final sentBy = messageData['sentby'];
-                              final messageText = messageData['message'];
-                              final messageTime = messageData['dateTime'];
-
-                              final isCurrentUser = sentBy == userId;
-
-                              messageWidgets.add(
-                                ListTile(
-                                  title: Container(
-                                    alignment: isCurrentUser
-                                        ? Alignment.centerRight
-                                        : Alignment.centerLeft,
-                                    child: Text(messageText),
-                                  ),
-                                  subtitle: Text(
-                                    DateFormat('MMM d, hh:mm a').format(
-                                      (messageTime as Timestamp).toDate(),
-                                    ),
-                                  ),
-                                  trailing: isCurrentUser
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : null,
-                                ),
-                              );
-                            }
+                            WidgetsBinding.instance!.addPostFrameCallback((_) {
+                              _scrollController.jumpTo(
+                                  _scrollController.position.maxScrollExtent);
+                            });
 
                             return ListView(
+                              controller: _scrollController,
                               padding: const EdgeInsets.only(bottom: 100),
-                              children: messageWidgets,
+                              children: messages.map((message) {
+                                final messageData =
+                                    message.data() as Map<String, dynamic>;
+                                final sentBy = messageData['sentby'];
+                                final messageText = messageData['message'];
+                                final messageTime = messageData['dateTime'];
+                                final isCurrentUser = sentBy == userId;
+
+                                return Column(
+                                  crossAxisAlignment: isCurrentUser
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    ListTile(
+                                      title: Container(
+                                        alignment: isCurrentUser
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                        child: Text(messageText),
+                                      ),
+                                      trailing: isCurrentUser
+                                          ? const Icon(
+                                              Icons.check,
+                                              color: Colors.green,
+                                            )
+                                          : null,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16, right: 16),
+                                      child: Text(
+                                        DateFormat('MMM d, hh:mm a').format(
+                                          (messageTime as Timestamp).toDate(),
+                                        ),
+                                        textAlign: isCurrentUser
+                                            ? TextAlign.right
+                                            : TextAlign.left,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                );
+                              }).toList(),
                             );
                           }
                         },
@@ -279,7 +286,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
-                              ),
+                            ),
                           ),
                           InkWell(
                             onTap: _sendMessage,

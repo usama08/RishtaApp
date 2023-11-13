@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyrishta/View/AdminSide/adminchat.dart';
-import 'package:easyrishta/View/Dashboard/controller/get_data.dart';
 import 'package:easyrishta/common/app_colors.dart';
 import 'package:easyrishta/common/app_image.dart';
 import 'package:easyrishta/models/chatroom.dart';
